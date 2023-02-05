@@ -1,0 +1,35 @@
+{% extends 'bledy/base.html' %}
+{% load bootstrap %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="card col-md-6 my-3 mx-auto text-white red darken-1">
+            <div class="card-body">
+                <h2>Wiązki - dodaj</h2>
+            </div>
+        </div>
+        <div class="card col-md-6 my-3 mx-auto">
+            <div class="card-body">
+                <form method="post" role="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row mb-3 md-form">
+                        <label class="control-label" for="id_nazwa_wiazki">Nazwa wiazki</label>
+                        <input maxlength="40" type="text" id="id_nazwa_wiazki" name="nazwa_wiazki" class=" form-control" required>
+                    </div>
+                    <div class="form-row mb-3 md-form">
+                        <select name="nazwa_klienta" class="mdb-select md-form" id="id_nazwa_klienta" required  searchable="Search here..">
+                            <option value="" disabled selected>Wybierz klienta</option>
+                            {% for result in klient %}
+                            <option value="{{ result.id }}">{{ result.nazwa_klienta }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="mdb-main-label">Nazwa klienta</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="aktywny" value="1">
+                        <button type="submit" class="btn btn-outline-primary btn-rounded waves-effect">Zapisz <i class="fas fa-save fa-lg"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

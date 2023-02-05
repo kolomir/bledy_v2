@@ -1,0 +1,35 @@
+<form method="post" role="form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="id_nr_zlecenia">Numer zlecenia</label>
+    <input type="text" id="id_nr_zlecenia" name="nr_zlecenia" value="{{wpis.nr_zlecenia}}">
+
+    <select name="nr_wiazki" id="id_nr_wiazki">
+        <option value="{{wpis.nr_wiazki_id}}" selected>{{wpis.nr_wiazki}}</option>
+        {% for result in wiazka %}
+        <option value="{{ result.id }}">{{ result.nazwa_wiazki }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="nr_grupy_roboczej" id="id_nr_grupy_roboczej">
+        <option value="{{wpis.nr_grupy_roboczej_id}}" selected>{{wpis.nr_grupy_roboczej}}</option>
+        {% for result in grupa %}
+        <option value="{{ result.id }}">{{ result.nr_grupy }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="nr_budujacego" id="id_nr_budujacego">
+        <option value="{{wpis.nr_budujacego_id}}" selected>[{{ wpis.nr_budujacego.nr_pracownika }}] {{ wpis.nr_budujacego.nazwisko }} {{ wpis.nr_budujacego.imie }}</option>
+        {% for result in budujacy %}
+        <option value="{{ result.id }}">[{{ result.nr_pracownika }}] {{ result.nazwisko }} {{ result.imie }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="rodzaj_reklamacji" id="id_rodzaj_reklamacji">
+        <option value="{{ wpis.rodzaj_reklamacji_id }}" selected>{{ wpis.rodzaj_reklamacji }}</option>
+        {% for result in rodzajReklamacji %}
+        <option value="{{ result.id }}">{{ result.rodzaj }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Zapisz <i class="fas fa-save fa-lg"></i></button>
+</form>

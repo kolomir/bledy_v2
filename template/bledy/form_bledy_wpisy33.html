@@ -1,0 +1,22 @@
+
+<form method="post" role="form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="id_nr_zlecenia">Numer zlecenia</label>
+    <input type="text" id="id_nr_zlecenia" name="nr_zlecenia">
+
+    <select name="nr_wiazki" id="id_nr_wiazki">
+        <option value="" disabled selected>Wybierz numer wiązki</option>
+        {% for result in wiazka %}
+        <option value="{{ result.id }}">{{ result.nazwa_wiazki }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="nr_grupy_roboczej" id="id_nr_grupy_roboczej">
+        <option value="" disabled selected>Wybierz grupę roboczą</option>
+        {% for result in grupa %}
+        <option value="{{ result.id }}">{{ result.nr_grupy }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Zapisz <i class="fas fa-save fa-lg"></i></button>
+</form>

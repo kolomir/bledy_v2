@@ -1,0 +1,66 @@
+{% extends 'bledy/base.html' %}
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="card col-md-8 my-3 mx-auto text-white red darken-1">
+            <div class="card-body">
+                <h2>Pracownicy - wpisy</h2>
+            </div>
+        </div>
+
+        <div class="card col-md-8 my-3 mx-auto">
+
+        <table id="dtPracownik" class="table table-striped table-hover table-sm table-borderless" cellspacing="0" width="100%">
+            <thead class="black white-text">
+                <tr>
+                    <th class="th-sm" width="4%">#</th>
+                    <th class="th-sm" width="4%">Nr pracownika</th>
+                    <th class="th-sm">Imie</th>
+                    <th class="th-sm">Nazwisko</th>
+                    <th class="th-sm" width="15%">Dzial</th>
+                    <th class="th-sm" width="8%">Zatrudniony</th>
+                    {% if user.is_authenticated %}
+                    <th class="th-sm" width="22%">#</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for wpis in pracownik %}
+                <tr>
+                    <th scope="row">{{ wpis.id }}</th>
+                    <td>{{ wpis.nr_pracownika }}</td>
+                    <td>{{ wpis.imie }}</td>
+                    <td>{{ wpis.nazwisko }}</td>
+                    <td>{{ wpis.dzial }}</td>
+                    <td>{{ wpis.zatrudniony }}</td>
+                    {% if user.is_authenticated %}
+                    <td>
+                        <a href="{% url 'pracownikFormedytuj' wpis.id %}" class="btn btn-outline-primary btn-rounded waves-effect btn-sm mr-2">Edytuj</a>
+                    {% if wpis.zatrudniony == 1 %}
+                        <a href="{% url 'usun_pracownik' wpis.id %}" class="btn btn-outline-danger btn-rounded waves-effect btn-sm">Usuń</a>
+                    {% else %}
+                        <a href="{% url 'przywroc_pracownik' wpis.id %}" class="btn btn-outline-success btn-rounded waves-effect btn-sm">Przywróć</a>
+                    {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="black white-text">
+                <tr>
+                    <th class="th-sm">#</th>
+                    <th class="th-sm">Nr pracownika</th>
+                    <th class="th-sm">Imie</th>
+                    <th class="th-sm">Nazwisko</th>
+                    <th class="th-sm">Dzial</th>
+                    <th class="th-sm">Zatrudniony</th>
+                    {% if user.is_authenticated %}
+                    <th class="th-sm">#</th>
+                    {% endif %}
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+
+{% endblock content %}

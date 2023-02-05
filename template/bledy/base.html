@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+    {% include "bledy/head.html" %}
+    <body class="d-flex flex-column h-100 d-inline-block">
+        {% include "bledy/header.html" %}
+        {% include "bledy/messages.html" %}
+
+        {% block content %}
+        {% endblock content %}
+
+        {% include "bledy/footer.html" %}
+        {% include "bledy/scripts.html" %}
+    </body>
+</html>

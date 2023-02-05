@@ -1,0 +1,53 @@
+{% extends 'bledy/base.html' %}
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="card col-md-6 my-3 mx-auto text-white red darken-1">
+            <div class="card-body">
+                <h2>Grupy błędów - wpisy</h2>
+            </div>
+        </div>
+        <div class="card col-md-6 my-3 mx-auto">
+
+            <table id="dtGrupyRobocze" class="table table-striped table-hover table-sm table-borderless" cellspacing="0" width="100%">
+                <thead class="black white-text">
+                    <tr>
+                        <th class="th-sm" width="10%">#</th>
+                        <th class="th-sm">Nazwa grupy</th>
+                        {% if user.is_authenticated %}
+                        <th class="th-sm" width="30%">#</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for wpis in grupy_bledow %}
+                    <tr>
+                        <th scope="row">{{ wpis.id }}</th>
+                        <td>{{ wpis.nazwa }}</td>
+                        {% if user.is_authenticated %}
+                        <td>
+                            <a href="{% url 'grupy_bledowFormedytuj' wpis.id %}" class="btn btn-outline-primary btn-rounded waves-effect btn-sm mr-2">Edytuj</a>
+                        {% if wpis.aktywna == 1 %}
+                            <a href="{% url 'usun_grupa_bledow' wpis.id %}" class="btn btn-outline-danger btn-rounded waves-effect btn-sm">Usuń</a>
+                        {% else %}
+                            <a href="{% url 'przywroc_grupa_bledow' wpis.id %}" class="btn btn-outline-success btn-rounded waves-effect btn-sm">Przywróć</a>
+                        {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="black white-text">
+                    <tr>
+                        <th class="th-sm">#</th>
+                        <th class="th-sm">Nazwa grupy</th>
+                        {% if user.is_authenticated %}
+                        <th class="th-sm">#</th>
+                        {% endif %}
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+{% endblock content %}

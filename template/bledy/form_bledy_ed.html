@@ -1,0 +1,35 @@
+{% extends 'bledy/base.html' %}
+{% load bootstrap %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="card col-md-6 my-3 mx-auto text-white red darken-1">
+            <div class="card-body">
+                <h2>Błędy - edycja</h2>
+            </div>
+        </div>
+        <div class="card col-md-6 my-3 mx-auto">
+            <div class="card-body">
+                <form method="post" role="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row mb-3 md-form">
+                        <label class="control-label" for="id_blad">Nazwa błędu</label>
+                        <input maxlength="100" type="text" id="id_blad" name="blad" class=" form-control" required value="{{ wpis.blad }}">
+                    </div>
+                    <div class="form-row mb-3 md-form">
+                        <select name="grupa_bledow" class="mdb-select md-form" id="id_grupa_bledow" required  searchable="Search here..">
+                            <option value="{{ wpis.id }}" selected>{{ wpis.grupa_bledow }}</option>
+                            {% for result in grupa_bledow %}
+                            <option value="{{ result.id }}">{{ result.nazwa }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="mdb-main-label">Wybierz grupę</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="aktywny" value="1">
+                        <button type="submit" class="btn btn-outline-primary btn-rounded waves-effect">Zapisz <i class="fas fa-save fa-lg"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

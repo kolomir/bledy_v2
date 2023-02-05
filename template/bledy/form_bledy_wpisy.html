@@ -1,0 +1,82 @@
+{% extends 'bledy/base.html' %}
+{% load bootstrap %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="card col-md-6 my-3 mx-auto text-white red darken-1">
+            <div class="card-body">
+                <h2>Błąd - nowy wpis</h2>
+            </div>
+        </div>
+        <div class="card col-md-6 my-3 mx-auto">
+            <div class="card-body">
+                <form method="post" role="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row mb-3">
+                        <div class="col">
+                            <select name="nr_wiazki" class="mdb-select md-form" id="id_nr_wiazki" required  searchable="Search here..">
+                                <option value="" disabled selected>Wybierz numer wiązki</option>
+                                {% for result in wiazka %}
+                                <option value="{{ result.id }}">{{ result.nazwa_wiazki }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="mdb-main-label">Numer wiązki</label>
+                        </div>
+                        <div class="col">
+                            <select name="nr_grupy_roboczej" class="mdb-select md-form" id="id_nr_grupy_roboczej" required  searchable="Search here..">
+                                <option value="" disabled selected>Wybierz grupę roboczą</option>
+                                {% for result in grupa %}
+                                <option value="{{ result.id }}">{{ result.nr_grupy }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="mdb-main-label">Grupa robocza</label>
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="col md-form">
+                            <label class="control-label" for="id_nr_zlecenia">Numer zlecenia</label>
+                            <input maxlength="20" placeholder="Numer zlecenia" type="text" id="id_nr_zlecenia" name="nr_zlecenia" class=" form-control" required>
+                        </div>
+                        <div class="col">
+                            <select name="nr_budujacego" class="mdb-select md-form" id="id_nr_budujacego" required  searchable="Search here..">
+                                <option value="" disabled selected>Wybierz numer osoby budującej</option>
+                                {% for result in budujacy %}
+                                <option value="{{ result.id }}">[{{ result.nr_pracownika }}] {{ result.nazwisko }} {{ result.imie }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="mdb-main-label">Numer budującego</label>
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="col md-form">
+                            <label class="control-label" for="id_ilosc_skontrolowanych">Ilość skontrolowanych</label>
+                            <input type="number" placeholder="Ilość skontrolowanych" step="1" maxlength="8" id="id_ilosc_skontrolowanych" name="ilosc_skontrolowanych" class=" form-control" required>
+                        </div>
+                        <div class="col md-form">
+                            <label class="control-label" for="id_ilosc_bledow">Ilość błędów</label>
+                            <input type="number" placeholder="Ilość błędów" step="1" maxlength="5" id="id_ilosc_bledow" name="ilosc_bledow" class=" form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="col">
+                            <select name="blad" class="mdb-select md-form" id="id_blad" required  searchable="Search here..">
+                                <option value="" disabled selected>Wybierz rodzaj błędu</option>
+                                {% for result in rodzajBledu %}
+                                <option value="{{ result.id }}">{{ result.blad }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="mdb-main-label">Rodzaj błędu</label>
+                        </div>
+                        <div class="col md-form">
+                            <textarea id="opis_id" class="md-textarea form-control" rows="3" name="opis"></textarea>
+                            <label for="opis_id">Opis błędu</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" id="data_dodania_text" name="data_dodania" value={{ data_dodania }}>
+                        <button type="submit" class="btn btn-outline-primary btn-rounded waves-effect">Zapisz <i class="fas fa-save fa-lg"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
