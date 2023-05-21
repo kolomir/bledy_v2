@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import RodzajeBledu, GrupaRobocza, Klient, Wiazka, Dzial, Pracownik, Autor, Bledy, RodzajReklamacji, Csv, GrupaBledow, Lider_dzial
+from .models import RodzajeBledu, GrupaRobocza, Klient, Wiazka, Dzial, Pracownik, Autor, Bledy, RodzajReklamacji, Csv, GrupaBledow, Lider_dzial, Karta
 
 
 @admin.register(Lider_dzial)
@@ -14,6 +14,13 @@ class BladAdmin(admin.ModelAdmin):
     list_display = ('blad', 'grupa_bledow', 'aktywny')
     list_filter = ('grupa_bledow', 'aktywny',)
     search_fields = ('blad', 'aktywny')
+
+
+@admin.register(Karta)
+class KartaAdmin(admin.ModelAdmin):
+    list_display = ('nr_karty', 'data_karty_miesiac', 'data_karty_rok', 'data_dodania', 'wycofana')
+    list_filter = ('data_karty_miesiac', 'data_karty_rok', 'wycofana')
+    search_fields = ('nr_karty', 'data_karty_miesiac', 'data_karty_rok', 'data_dodania', 'wycofana')
 
 
 @admin.register(GrupaBledow)

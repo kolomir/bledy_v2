@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Bledy, Klient, GrupaRobocza, Dzial, RodzajeBledu, Wiazka, Pracownik, Autor, RodzajReklamacji, Csv, GrupaBledow, Lider_dzial
+from .models import Bledy, Klient, GrupaRobocza, Dzial, RodzajeBledu, Wiazka, Pracownik, Autor, RodzajReklamacji, Csv, GrupaBledow, Lider_dzial, Karta
 from .forms import KlientForm, SkasowacKlienci, GrupaRoboczaForm, SkasowacGrupaRobocza, DzialForm, SkasowacDzial, \
                 BladForm, SkasowacBlad, WiazkaForm, SkasowacWiazka, PracownikForm, SkasowacPracownik, BledyForm, \
-                SkasowacBledy, CsvModelForm, GrupaBledowForm, SkasowacGrupaBledow, LiderDzial
+                SkasowacBledy, CsvModelForm, GrupaBledowForm, SkasowacGrupaBledow, LiderDzial, KartaForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import csv
@@ -21,8 +21,9 @@ def get_author(user):
     return None
 
 
-def wszystkie_wpisy(request):
+def ostatnie_wpisy(request):
     wszystkie_wpisy = Bledy.objects.filter(skasowany=False).order_by('-id')[:300]
+    karta = Karta.objects.filter(wycofana=False).order_by('-id')[:100]
 
     if request.user.is_authenticated:
         zglaszajacy_wpisy = get_author(request.user)
@@ -38,6 +39,7 @@ def wszystkie_wpisy(request):
         wpisy_lider = Bledy.objects.filter(nr_grupy_roboczej__in=department_ids).filter(zakonczony=0)
 
         # - info -------------------------------------------------------------------------
+        '''
         test = 'zalogowany_user: %s; zalogowany_user_id: %d'
         print('----------------------------------------------------------')
         print('zalogowany_user: ', zalogowany_user)
@@ -51,7 +53,7 @@ def wszystkie_wpisy(request):
         print('----------------------------------------------------------')
         print(test % (zalogowany_user,zalogowany_user_id))
         print('----------------------------------------------------------')
-
+        '''
     else:
         zalogowany_user = ""
         zalogowany_user_id = ""
@@ -65,9 +67,34 @@ def wszystkie_wpisy(request):
         'zalogowany_user_id': zalogowany_user_id,
         'zalogowany_user': zalogowany_user,
         'id_autor': id_autor,
+        'karta': karta,
+    }
+
+    return render(request, 'bledy/ostatnie_wpisy.html', context)
+
+
+def wszystkie_wpisy(request):
+    wszystkie_wpisy = Bledy.objects.filter(skasowany=False).order_by('-id')
+
+    if request.user.is_authenticated:
+        zglaszajacy_wpisy = get_author(request.user)
+        lista_userow = get_user_model()
+        autor_wpisu = get_object_or_404(lista_userow, username__exact=zglaszajacy_wpisy)
+        lista_autors = Autor.objects.filter(user_id=autor_wpisu.id).values_list('id', flat=True)
+        id_autor = lista_autors[0]
+
+        zalogowany_user = request.user
+        zalogowany_user_id = request.user.id
+
+    context = {
+        'wszystkie_wpisy': wszystkie_wpisy,
+        'zalogowany_user_id': zalogowany_user_id,
+        'zalogowany_user': zalogowany_user,
+        'id_autor': id_autor,
     }
 
     return render(request, 'bledy/wszystkie_wpisy.html', context)
+
 
 
 @login_required
@@ -75,11 +102,9 @@ def przypisz_lider_dzial(request):
     form_lider_dzial = LiderDzial(request.POST or None, request.FILES or None)
     lider_user = Autor.objects.all()
     grupa = GrupaRobocza.objects.filter(aktywna=True).order_by('nr_grupy')
-    print(lider_user)
 
     if form_lider_dzial.is_valid():
         get_lider = request.POST.get('lider_user')
-        print(get_lider)
         form_lider_dzial.save()
         return redirect(wpisy_lider_dzial)
 
@@ -413,8 +438,6 @@ def nowy_blad(request):
     if form_blad.is_valid():
         bl = request.GET.get('blad')
         gr = request.GET.get('grupa_bledow')
-        print('bl: ' + str(bl))
-        print('gr: ' + str(gr))
         form_blad.save()
         return redirect(wpisyBlad)
 
@@ -655,18 +678,76 @@ def nowy_blad_wpis(request):
     grupa = GrupaRobocza.objects.filter(aktywna=True).order_by('nr_grupy')
     budujacy = Pracownik.objects.filter(zatrudniony=True).order_by('nr_pracownika')
     rodzajBledu = RodzajeBledu.objects.filter(aktywny=True).order_by('blad')
-    moja_Data = datetime.now()
-    #data_dodania = datetime.now()
-    #data_dodania = datetime.now()
-    data_dodania = moja_Data.strftime("%Y-%m-%d")
-    #print('moja_Data: ', moja_Data)
-    print('data_dodania: ', data_dodania)
+    nr_karty = request.session['nr_karty']
+    kolejny = request.session['kolejny']
+    nr_wiazki = request.session['nr_wiazki']
+    nr_wiazki_id = request.session['nr_wiazki_id']
+    nr_grupy_roboczej_id = request.session['nr_grupy_roboczej_id']
+    nr_grupy_roboczej = request.session['nr_grupy_roboczej']
+    nr_zlecenia = request.session['nr_zlecenia']
+    ilosc_skontrolowanych = request.session['ilosc_skontrolowanych']
+    nr_budujacego_id = request.session['nr_budujacego_id']
+    budujacy_nazwisko = request.session['budujacy_nazwisko']
+    budujacy_imie = request.session['budujacy_imie']
+    budujacy_nr = request.session['budujacy_nr']
 
-    if form_blad_wpis.is_valid():
-        autor = get_author(request.user)
-        form_blad_wpis.instance.autor_wpisu = autor
-        form_blad_wpis.save()
-        return redirect(wszystkie_wpisy)
+    moja_Data = datetime.now()
+    data_dodania = moja_Data.strftime("%Y-%m-%d")
+
+    if request.method == 'POST' and 'zapisz_i_koniec' in request.POST:
+
+        if form_blad_wpis.is_valid():
+            instancja = form_blad_wpis.save(commit=False)
+            autor = get_author(request.user)
+            instancja.autor_wpisu = autor
+            instancja.nr_karty = int(nr_karty)
+            request.session['kolejny'] = 'nie'
+            instancja.save()
+
+            return redirect(ostatnie_wpisy)
+        else:
+            form_blad_wpis.errors
+
+    if request.method == 'POST' and 'zapisz_i_dodaj' in request.POST:
+        # - odczyt i przygotowanie danych ----------------------
+        nr_wiazki_id = request.POST.get('nr_wiazki')
+        wyb_wiazki = Wiazka.objects.filter(id=nr_wiazki_id)
+        nr_wiazki = str(wyb_wiazki[0])
+        nr_grupy_roboczej_id = request.POST.get('nr_grupy_roboczej')
+        wyb_grupy_roboczej = GrupaRobocza.objects.filter(id=nr_grupy_roboczej_id)
+        nr_grupy_roboczej = str(wyb_grupy_roboczej[0])
+        nr_zlecenia = request.POST.get('nr_zlecenia')
+        ilosc_skontrolowanych = request.POST.get('ilosc_skontrolowanych')
+
+        nr_budujacego_id = request.POST.get('nr_budujacego')
+        budujacy = Pracownik.objects.filter(id=nr_budujacego_id)
+        budujacy_nazwisko = str(budujacy[0].nazwisko)
+        budujacy_imie = str(budujacy[0].imie)
+        budujacy_nr = str(budujacy[0])
+
+        # ------------------------------------------------------
+        if form_blad_wpis.is_valid():
+            instancja = form_blad_wpis.save(commit=False)
+            autor = get_author(request.user)
+            instancja.autor_wpisu = autor
+            nr_karty = request.POST.get('id_karty')
+            instancja.nr_karty = int(nr_karty)
+            request.session['kolejny'] = 'tak'
+            request.session['nr_wiazki'] = nr_wiazki
+            request.session['nr_wiazki_id'] = nr_wiazki_id
+            request.session['nr_grupy_roboczej_id'] = nr_grupy_roboczej_id
+            request.session['nr_grupy_roboczej'] = nr_grupy_roboczej
+            request.session['nr_zlecenia'] = nr_zlecenia
+            request.session['ilosc_skontrolowanych'] = ilosc_skontrolowanych
+            request.session['nr_budujacego_id'] = nr_budujacego_id
+            request.session['budujacy_nazwisko'] = budujacy_nazwisko
+            request.session['budujacy_imie'] = budujacy_imie
+            request.session['budujacy_nr'] = budujacy_nr
+            instancja.save()
+
+            return redirect(nowy_blad_wpis)
+        else:
+            form_blad_wpis.errors
 
     context = {
         'form_blad_wpis': form_blad_wpis,
@@ -674,11 +755,120 @@ def nowy_blad_wpis(request):
         'grupa': grupa,
         'budujacy': budujacy,
         'rodzajBledu': rodzajBledu,
-        'data_dodania': data_dodania
+        'id_karty': nr_karty,
+        'data_dodania': data_dodania,
+        'kolejny': kolejny,
+        'nr_wiazki': nr_wiazki,
+        'nr_wiazki_id': nr_wiazki_id,
+        'nr_grupy_roboczej_id': nr_grupy_roboczej_id,
+        'nr_grupy_roboczej': nr_grupy_roboczej,
+        'nr_zlecenia': nr_zlecenia,
+        'ilosc_skontrolowanych': ilosc_skontrolowanych,
+        'nr_budujacego_id': nr_budujacego_id,
+        'budujacy_nazwisko': budujacy_nazwisko,
+        'budujacy_imie': budujacy_imie,
+        'budujacy_nr': budujacy_nr,
     }
 
     return render(request, 'bledy/form_bledy_wpisy.html', context)
 
+
+def wpisyKarta(request):
+    karta = Karta.objects.all().order_by('-id')
+
+    context = {
+        'karta': karta
+    }
+    return render(request,'bledy/wszystkie_karty.html',context)
+
+
+@login_required
+def nowaKarta(request):
+    form_karta = KartaForm(request.POST or None, request.FILES or None)
+    karta = Karta.objects.all().order_by('-id')[:30]
+    ostatni_wpis = Karta.objects.latest('id')
+
+    moja_Data = datetime.now()
+    data_dodania = moja_Data.strftime("%Y-%m-%d")
+    data_dodania_miesiac = int(moja_Data.strftime("%m"))
+    data_dodania_rok = int(moja_Data.strftime("%Y"))
+    nr_karty = int(ostatni_wpis.nr_karty) + 1
+    wycofana = False
+
+    '''
+    print('- GENEROWANE --------------------------------------------')
+    print('data_dodania: ', data_dodania)
+    print('data_dodania_miesiac: ', data_dodania_miesiac)
+    print('data_dodania_rok: ', data_dodania_rok)
+    print('ostatni_wpis: {}'.format(ostatni_wpis.nr_karty))
+    print('- GENEROWANE --------------------------------------------')
+
+    print('- POBRANE -----------------------------------------------')
+    dataDod_post = request.POST.get('data_dodania')
+    miesiac_post = request.POST.get('data_dodania_miesiac')
+    rok_post = request.POST.get('data_dodania_rok')
+    nr_karty_post = request.POST.get('nr_karty')
+    wycofana_post = 0
+    print('dataDod_post: ',dataDod_post)
+    print('miesiac_post: ',miesiac_post)
+    print('rok_post: ',rok_post)
+    print('nr_karty: ',nr_karty_post)
+    print('wycofana: ',wycofana_post)
+    print('- POBRANE -----------------------------------------------')
+    # {{ form_karta.as_p }}
+    '''
+
+    if request.method == 'POST':
+        if form_karta.is_valid():
+            dopisz = form_karta.save(commit=False)
+
+            dopisz.nr_karty = int(ostatni_wpis.nr_karty) + 1
+            dopisz.data_karty_miesiac = data_dodania_miesiac
+            dopisz.data_karty_rok = data_dodania_rok
+            dopisz.wycofana = 0
+            dopisz.save()
+            request.session['nr_karty'] = nr_karty
+            request.session['kolejny'] = 'nie'
+            request.session['nr_wiazki'] = 'nic'
+            request.session['nr_wiazki_id'] = 0
+            request.session['nr_grupy_roboczej_id'] = 0
+            request.session['nr_grupy_roboczej'] = 'nic'
+            request.session['nr_zlecenia'] = 'nic'
+            request.session['ilosc_skontrolowanych'] = 0
+            request.session['nr_budujacego_id'] = 0
+            request.session['budujacy_nazwisko'] = 'nic'
+            request.session['budujacy_imie'] = 'nic'
+            request.session['budujacy_nr'] = 'nic'
+            return redirect(nowy_blad_wpis)
+        else:
+            print('Nie jest VALID!')
+            print('Error: ',form_karta.errors)
+    else:
+        print('Coś nie tak!')
+
+    context = {
+        'form_karta': form_karta,
+        'karta': karta,
+        'data_dodania': data_dodania,
+        'data_dodania_miesiac': str(data_dodania_miesiac),
+        'data_dodania_rok': str(data_dodania_rok),
+        'nr_karty': int(nr_karty),
+        'wycofana': wycofana,
+    }
+    return render(request, 'bledy/form_karta.html', context)
+
+
+@login_required
+def detal_karta(request, id):
+    wpis = get_object_or_404(Karta, pk=id)
+    wszystkie_wpisy = Bledy.objects.filter(nr_karty=wpis.id)
+
+    context = {
+        'wpis': wpis,
+        'wszystkie_wpisy': wszystkie_wpisy,
+    }
+
+    return render(request, 'bledy/karta.html', context)
 
 
 @login_required
@@ -695,7 +885,7 @@ def edytuj_blad_wpis(request, id):
 
     if wpisy.is_valid():
         wpisy.save()
-        return redirect(wszystkie_wpisy)
+        return redirect(ostatnie_wpisy)
 
     context = {
         'wpisy': wpisy,
@@ -720,7 +910,7 @@ def usun_blad_wpis(request, id):
         kasuj = form_blad_wpis.save(commit=False)
         kasuj.skasowany = 1
         kasuj.save()
-        return redirect(wszystkie_wpisy)
+        return redirect(ostatnie_wpisy)
 
     context = {
         'wpis': wpis
@@ -737,7 +927,7 @@ def zakoncz_blad_wpis(request, id):
         kasuj = form_blad_wpis.save(commit=False)
         kasuj.zakonczony = 1
         kasuj.save()
-        return redirect(wszystkie_wpisy)
+        return redirect(ostatnie_wpisy)
 
     context = {
         'wpis': wpis
@@ -754,7 +944,7 @@ def przywroc_blad_wpis(request, id):
         kasuj = form_blad_wpis.save(commit=False)
         kasuj.skasowany = 0
         kasuj.save()
-        return redirect(wszystkie_wpisy)
+        return redirect(ostatnie_wpisy)
 
     context = {
         'wpis': wpis
@@ -888,7 +1078,7 @@ def login_request(request):
 def logout_request(request):
     logout(request)
     messages.info(request, "Właśnie się wylogowałeś")
-    return redirect(wszystkie_wpisy)
+    return redirect(ostatnie_wpisy)
 
 
 # -- TEST CSV ------------------------------------------------

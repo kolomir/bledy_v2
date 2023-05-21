@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import wszystkie_wpisy, nowy_klient, edytuj_klient, wpisyKlient, usun_klient, przywroc_klient, \
+from .views import ostatnie_wpisy, nowy_klient, edytuj_klient, wpisyKlient, usun_klient, przywroc_klient, \
                 nowa_grupa, edytuj_grupa, wpisyGrupaRobocza, usun_grupa, przywroc_grupa, \
                 nowy_dzial, edytuj_dzial, wpisyDzialy, usun_dzial, przywroc_dzial, \
                 nowy_blad, edytuj_blad, wpisyBlad, usun_blad, przywroc_blad, \
@@ -8,11 +8,11 @@ from .views import wszystkie_wpisy, nowy_klient, edytuj_klient, wpisyKlient, usu
                 nowy_blad_wpis, edytuj_blad_wpis, usun_blad_wpis, przywroc_blad_wpis, filtrowanie, \
                 login_request, logout_request, upload_file_view, nowa_grupa_bledow, edytuj_grupa_bledow, \
                 usun_grupa_bledow, przywroc_grupa_bledow, wpisyGrupaBledow, wpisy_lider_dzial, przypisz_lider_dzial, \
-                zakoncz_blad_wpis
+                zakoncz_blad_wpis, nowaKarta, wpisyKarta, wszystkie_wpisy, detal_karta
 
 
 urlpatterns = [
-    path('', wszystkie_wpisy, name='wszystkie_wpisy'),
+    path('', ostatnie_wpisy, name='ostatnie_wpisy'),
     #= Nowy ===============================================
     path('klienciForm/', nowy_klient, name='klienciForm'),
     path('grupyForm/', nowa_grupa, name='grupyForm'),
@@ -24,6 +24,7 @@ urlpatterns = [
     path('bledy_wpisForm/', nowy_blad_wpis, name='bledy_wpisForm'),
     path('grupy_bledowForm/', nowa_grupa_bledow, name='grupy_bledowForm'),
     path('przypisz_lider_dzial/', przypisz_lider_dzial, name='przypisz_lider_dzial'),
+    path('form_karta/', nowaKarta, name='nowaKarta'),
 
     #= Edycja =============================================
     path('klienciFormedytuj/<int:id>/', edytuj_klient, name='klienciFormedytuj'),
@@ -43,8 +44,12 @@ urlpatterns = [
     path('bledy/', wpisyBlad, name='bledy'),
     path('wiazka/', wpisyWiazka, name='wiazka'),
     path('pracownik/', wpisyPracownik, name='pracownik'),
-    path('', wszystkie_wpisy, name='wszystkie_wpisy'),
+    #path('', wszystkie_wpisy, name='wszystkie_wpisy'),
     path('lider_dzial/', wpisy_lider_dzial, name='lider_dzial'),
+    path('wszystkie_karty/', wpisyKarta, name='wpisyKarta'),
+    path('wszystkie_wpisy/', wszystkie_wpisy, name='wszystkie_wpisy'),
+    path('detal_karta/<int:id>/', detal_karta, name='detal_karta'),
+    path('detal_karta/<int:id>/', detal_karta, name='detal_karta'),
 
     #= Kasowanie ==========================================
     path('usun_klient/<int:id>/', usun_klient, name='usun_klient'),

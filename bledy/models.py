@@ -85,6 +85,25 @@ class RodzajReklamacji(models.Model):
         return self.rodzaj
 
 
+class Karta(models.Model):
+    nr_karty = models.DecimalField(max_digits=5, decimal_places=0, default=0)  #
+    data_karty_miesiac = models.DecimalField(max_digits=3, decimal_places=0, default=0, blank=True, null=True)
+    data_karty_rok = models.DecimalField(max_digits=5, decimal_places=0, default=0, blank=True, null=True)
+    data_dodania = models.DateTimeField('data dodania', blank=True, null=True)
+    wycofana = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "{}/{}/{}".format(self.nr_karty.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
+'''
+class Karta(models.Model):
+    nr_karty = models.DecimalField(max_digits=5, decimal_places=0, default=0)  #
+    data_karty_miesiac = models.DateTimeField('data karty miesiąc', blank=True, null=True)
+    data_karty_rok = models.DateTimeField('data karty rok', blank=True, null=True)
+
+    def __str__(self):
+        return "{}/{}/{}".format(self.nr_karty.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
+'''
+
 class Bledy(models.Model):
 
     hostname = socket.gethostname()
@@ -109,6 +128,8 @@ class Bledy(models.Model):
     data_dodania = models.DateTimeField('data dodania', blank=True, null=True)
     skasowany = models.BooleanField(default=False)
     zakonczony = models.BooleanField(default=False)
+    #nr_karty = models.ForeignKey(Karta,on_delete=models.CASCADE, default=1) #
+    nr_karty = models.DecimalField(max_digits=8, decimal_places=0, default=1) #
 
     def __str__(self):
         return str(self.nr_wiazki)
@@ -132,3 +153,17 @@ class Csv(models.Model):
     def __str__(self):
         return f"File id: {self.id}"
 
+'''
+class Model1(models.Model):
+    liczba = models.DecimalField(max_digits=5, decimal_places=0, default=0)  #
+    opis = models.CharField(max_length=20) #
+    def __str__(self):
+        return str(self.opis)
+
+class Model2(models.Model):
+    numer = models.DecimalField(max_digits=5, decimal_places=0, default=0)  #
+    model_dodany = models.ForeignKey(Model1, on_delete=models.CASCADE, related_name="model1")
+    data_karty_rok = models.DateTimeField('data karty rok', blank=True, null=True)
+    def __str__(self):
+        return str(self.numer)
+'''

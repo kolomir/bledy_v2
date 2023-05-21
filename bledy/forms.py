@@ -1,6 +1,19 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Klient, GrupaRobocza, Dzial, RodzajeBledu, Wiazka, Pracownik, Bledy, Csv, GrupaBledow, Lider_dzial
+from .models import Klient, GrupaRobocza, Dzial, RodzajeBledu, Wiazka, Pracownik, Bledy, Csv, GrupaBledow, Lider_dzial, Karta
+
+
+#= KARTA ===============================================================
+class KartaForm(ModelForm):
+    class Meta:
+        model = Karta
+        fields = [
+            'nr_karty',
+            'data_karty_miesiac',
+            'data_karty_rok',
+            'data_dodania',
+            'wycofana'
+        ]
 
 
 #= LIDER - DZIAL =======================================================
