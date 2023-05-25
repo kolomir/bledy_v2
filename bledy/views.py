@@ -691,6 +691,13 @@ def nowy_blad_wpis(request):
     budujacy_imie = request.session['budujacy_imie']
     budujacy_nr = request.session['budujacy_nr']
 
+    #print('nr_karty_s:',nr_karty_s)
+    #print(type(nr_karty_s))
+    #nr_karty = int(nr_karty_s)
+    print('nr_karty:', nr_karty)
+    print(type(int(nr_karty)))
+
+
     moja_Data = datetime.now()
     data_dodania = moja_Data.strftime("%Y-%m-%d")
 
@@ -827,7 +834,10 @@ def nowaKarta(request):
             dopisz.data_karty_rok = data_dodania_rok
             dopisz.wycofana = 0
             dopisz.save()
-            request.session['nr_karty'] = nr_karty
+            obecny_wpis_1 = Karta.objects.latest('id')
+            print('obecny_wpis_1: ', obecny_wpis_1.id, ' | ',type(obecny_wpis_1.id))
+            print('nr_karty: ', nr_karty, ' | ',type(nr_karty))
+            request.session['nr_karty'] = obecny_wpis_1.id
             request.session['kolejny'] = 'nie'
             request.session['nr_wiazki'] = 'nic'
             request.session['nr_wiazki_id'] = 0

@@ -155,7 +155,7 @@
                 {% for wpis in karta %}
                 <tr>
                     <th scope="row">{{ wpis.id }}</th>
-                    <td>{{ wpis.nr_karty }}/{{ wpis.data_karty_miesiac }}/{{ wpis.data_karty_rok }}</td>
+                    <td>{{ wpis.id }}/{{ wpis.data_karty_miesiac }}/{{ wpis.data_karty_rok }}</td>
                     <td>{{ wpis.data_dodania }}</td>
                     {% if user.is_authenticated %}
                     <td>

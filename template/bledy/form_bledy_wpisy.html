@@ -49,6 +49,7 @@
                             <label class="mdb-main-label">Numer budującego</label>
                         </div>
                     </div>
+                    <!--
                     <div class="form-row mb-3">
                         <div class="col md-form">
                             <label class="control-label" for="id_ilosc_skontrolowanych">Ilość skontrolowanych</label>
@@ -59,6 +60,7 @@
                             <input type="number" placeholder="Ilość błędów" step="1" maxlength="5" id="id_ilosc_bledow" name="ilosc_bledow" class=" form-control" required>
                         </div>
                     </div>
+                    -->
                     <div class="form-row mb-3">
                         <div class="col">
                             <select name="blad" class="mdb-select md-form" id="id_blad" required  searchable="Search here..">
@@ -119,6 +121,7 @@
                             <label class="mdb-main-label">Numer budującego</label>
                         </div>
                     </div>
+                    <!--
                     <div class="form-row mb-3">
                         <div class="col md-form">
                             <label class="control-label" for="id_ilosc_skontrolowanych">Ilość skontrolowanych</label>
@@ -129,6 +132,7 @@
                             <input type="number" placeholder="Ilość błędów" step="1" maxlength="5" id="id_ilosc_bledow" name="ilosc_bledow" class=" form-control" required value="{{ wpis.ilosc_bledow }}">
                         </div>
                     </div>
+                    -->
                     <div class="form-row mb-3">
                         <div class="col">
                             <select name="blad" class="mdb-select md-form" id="id_blad" required  searchable="Search here..">
@@ -146,6 +150,8 @@
                     </div>
                     {% endif %}
                     <div class="form-group">
+                        <input type="hidden" id="ilosc_skontrolowanych_text" name="ilosc_skontrolowanych" value="1">
+                        <input type="hidden" id="ilosc_bledow_text" name="ilosc_bledow" value="1">
                         <input type="hidden" id="data_dodania_text" name="data_dodania" value={{ data_dodania }}>
                         <input type="hidden" id="id_karty_text" name="id_karty" value={{ id_karty }}>
                         <button type="submit" class="btn btn-outline-primary btn-rounded waves-effect" name="zapisz_i_koniec">Zapisz i wyjdź <i class="fas fa-save fa-lg"></i></button>
