@@ -680,33 +680,42 @@ def nowy_blad_wpis(request):
     rodzajBledu = RodzajeBledu.objects.filter(aktywny=True).order_by('blad')
     nr_karty = request.session['nr_karty']
     kolejny = request.session['kolejny']
-    nr_wiazki = request.session['nr_wiazki']
-    nr_wiazki_id = request.session['nr_wiazki_id']
+    #nr_wiazki = request.session['nr_wiazki']
+    #nr_wiazki_id = request.session['nr_wiazki_id']
+    #ilosc_skontrolowanych = request.session['ilosc_skontrolowanych']
+    #nr_zlecenia = request.session['nr_zlecenia']
     nr_grupy_roboczej_id = request.session['nr_grupy_roboczej_id']
     nr_grupy_roboczej = request.session['nr_grupy_roboczej']
-    nr_zlecenia = request.session['nr_zlecenia']
-    ilosc_skontrolowanych = request.session['ilosc_skontrolowanych']
     nr_budujacego_id = request.session['nr_budujacego_id']
     budujacy_nazwisko = request.session['budujacy_nazwisko']
     budujacy_imie = request.session['budujacy_imie']
     budujacy_nr = request.session['budujacy_nr']
-
-    #print('nr_karty_s:',nr_karty_s)
-    #print(type(nr_karty_s))
-    #nr_karty = int(nr_karty_s)
-    print('nr_karty:', nr_karty)
-    print(type(int(nr_karty)))
-
+    nr_grupy_roboczej_id1 = request.POST.get('nr_grupy_roboczej')
+    nr_budujacego1 = request.POST.get('nr_budujacego')
+    blad1 = request.POST.get('nr_budujacego')
+    data_dodania1 = request.POST.get('data_dodania')
 
     moja_Data = datetime.now()
     data_dodania = moja_Data.strftime("%Y-%m-%d")
 
     if request.method == 'POST' and 'zapisz_i_koniec' in request.POST:
+        test_nr_kontrolera = 999
+        test_ilosc_bledow = 999
+        test_blad_id = 1
+        test_nr_budujacego_id = 1
+        test_nr_grupy_roboczej_id = 1
+        test_ilosc_skontrolowanych = 1
+        test_nr_zlecenia = 1
+        test_nr_wiazki_id = 1
 
         if form_blad_wpis.is_valid():
+            print('test_ilosc_bledow',test_ilosc_bledow)
             instancja = form_blad_wpis.save(commit=False)
             autor = get_author(request.user)
             instancja.autor_wpisu = autor
+            instancja.ilosc_skontrolowanych = 1
+            instancja.nr_zlecenia = test_nr_zlecenia
+            instancja.nr_wiazki_id = test_nr_wiazki_id
             instancja.nr_karty = int(nr_karty)
             request.session['kolejny'] = 'nie'
             instancja.save()
@@ -717,14 +726,14 @@ def nowy_blad_wpis(request):
 
     if request.method == 'POST' and 'zapisz_i_dodaj' in request.POST:
         # - odczyt i przygotowanie danych ----------------------
-        nr_wiazki_id = request.POST.get('nr_wiazki')
-        wyb_wiazki = Wiazka.objects.filter(id=nr_wiazki_id)
-        nr_wiazki = str(wyb_wiazki[0])
+        #nr_wiazki_id = request.POST.get('nr_wiazki')
+        #wyb_wiazki = Wiazka.objects.filter(id=nr_wiazki_id)
+        #nr_wiazki = str(wyb_wiazki[0])
+        #ilosc_skontrolowanych = request.POST.get('ilosc_skontrolowanych')
+        #nr_zlecenia = request.POST.get('nr_zlecenia')
         nr_grupy_roboczej_id = request.POST.get('nr_grupy_roboczej')
         wyb_grupy_roboczej = GrupaRobocza.objects.filter(id=nr_grupy_roboczej_id)
         nr_grupy_roboczej = str(wyb_grupy_roboczej[0])
-        nr_zlecenia = request.POST.get('nr_zlecenia')
-        ilosc_skontrolowanych = request.POST.get('ilosc_skontrolowanych')
 
         nr_budujacego_id = request.POST.get('nr_budujacego')
         budujacy = Pracownik.objects.filter(id=nr_budujacego_id)
@@ -740,12 +749,15 @@ def nowy_blad_wpis(request):
             nr_karty = request.POST.get('id_karty')
             instancja.nr_karty = int(nr_karty)
             request.session['kolejny'] = 'tak'
-            request.session['nr_wiazki'] = nr_wiazki
-            request.session['nr_wiazki_id'] = nr_wiazki_id
+            instancja.ilosc_skontrolowanych = 0
+            instancja.nr_zlecenia = '0'
+            instancja.nr_wiazki_id = 1
+            #request.session['nr_wiazki'] = nr_wiazki
+            #request.session['nr_wiazki_id'] = nr_wiazki_id
+            #request.session['nr_zlecenia'] = nr_zlecenia
+            #request.session['ilosc_skontrolowanych'] = ilosc_skontrolowanych
             request.session['nr_grupy_roboczej_id'] = nr_grupy_roboczej_id
             request.session['nr_grupy_roboczej'] = nr_grupy_roboczej
-            request.session['nr_zlecenia'] = nr_zlecenia
-            request.session['ilosc_skontrolowanych'] = ilosc_skontrolowanych
             request.session['nr_budujacego_id'] = nr_budujacego_id
             request.session['budujacy_nazwisko'] = budujacy_nazwisko
             request.session['budujacy_imie'] = budujacy_imie
@@ -765,12 +777,12 @@ def nowy_blad_wpis(request):
         'id_karty': nr_karty,
         'data_dodania': data_dodania,
         'kolejny': kolejny,
-        'nr_wiazki': nr_wiazki,
-        'nr_wiazki_id': nr_wiazki_id,
+        #'nr_wiazki': nr_wiazki,
+        #'nr_wiazki_id': nr_wiazki_id,
+        #'nr_zlecenia': nr_zlecenia,
+        #'ilosc_skontrolowanych': ilosc_skontrolowanych,
         'nr_grupy_roboczej_id': nr_grupy_roboczej_id,
         'nr_grupy_roboczej': nr_grupy_roboczej,
-        'nr_zlecenia': nr_zlecenia,
-        'ilosc_skontrolowanych': ilosc_skontrolowanych,
         'nr_budujacego_id': nr_budujacego_id,
         'budujacy_nazwisko': budujacy_nazwisko,
         'budujacy_imie': budujacy_imie,
@@ -792,6 +804,7 @@ def wpisyKarta(request):
 @login_required
 def nowaKarta(request):
     form_karta = KartaForm(request.POST or None, request.FILES or None)
+    wiazka = Wiazka.objects.filter(aktywny=True).order_by('nazwa_wiazki')
     karta = Karta.objects.all().order_by('-id')[:30]
     ostatni_wpis = Karta.objects.latest('id')
 
@@ -802,53 +815,38 @@ def nowaKarta(request):
     nr_karty = int(ostatni_wpis.nr_karty) + 1
     wycofana = False
 
-    '''
-    print('- GENEROWANE --------------------------------------------')
-    print('data_dodania: ', data_dodania)
-    print('data_dodania_miesiac: ', data_dodania_miesiac)
-    print('data_dodania_rok: ', data_dodania_rok)
-    print('ostatni_wpis: {}'.format(ostatni_wpis.nr_karty))
-    print('- GENEROWANE --------------------------------------------')
-
-    print('- POBRANE -----------------------------------------------')
-    dataDod_post = request.POST.get('data_dodania')
-    miesiac_post = request.POST.get('data_dodania_miesiac')
-    rok_post = request.POST.get('data_dodania_rok')
-    nr_karty_post = request.POST.get('nr_karty')
-    wycofana_post = 0
-    print('dataDod_post: ',dataDod_post)
-    print('miesiac_post: ',miesiac_post)
-    print('rok_post: ',rok_post)
-    print('nr_karty: ',nr_karty_post)
-    print('wycofana: ',wycofana_post)
-    print('- POBRANE -----------------------------------------------')
-    # {{ form_karta.as_p }}
-    '''
-
     if request.method == 'POST':
         if form_karta.is_valid():
             dopisz = form_karta.save(commit=False)
 
+            autor = get_author(request.user)
+            nr_wiazki_id = request.POST.get('nr_wiazki')
+            nr_zlecenia = request.POST.get('nr_zlecenia')
+            ilosc_wadliwych = request.POST.get('ilosc_wadliwych')
+            dopisz.autor_wpisu = autor
             dopisz.nr_karty = int(ostatni_wpis.nr_karty) + 1
             dopisz.data_karty_miesiac = data_dodania_miesiac
             dopisz.data_karty_rok = data_dodania_rok
             dopisz.wycofana = 0
+            dopisz.nr_wiazki_id = int(nr_wiazki_id)
+            dopisz.nr_zlecenia = nr_zlecenia
+            dopisz.ilosc_wadliwych = ilosc_wadliwych
             dopisz.save()
             obecny_wpis_1 = Karta.objects.latest('id')
-            print('obecny_wpis_1: ', obecny_wpis_1.id, ' | ',type(obecny_wpis_1.id))
-            print('nr_karty: ', nr_karty, ' | ',type(nr_karty))
+            #print('obecny_wpis_1: ', obecny_wpis_1.id, ' | ',type(obecny_wpis_1.id))
+            #print('nr_karty: ', nr_karty, ' | ',type(nr_karty))
             request.session['nr_karty'] = obecny_wpis_1.id
             request.session['kolejny'] = 'nie'
-            request.session['nr_wiazki'] = 'nic'
-            request.session['nr_wiazki_id'] = 0
             request.session['nr_grupy_roboczej_id'] = 0
             request.session['nr_grupy_roboczej'] = 'nic'
-            request.session['nr_zlecenia'] = 'nic'
-            request.session['ilosc_skontrolowanych'] = 0
             request.session['nr_budujacego_id'] = 0
             request.session['budujacy_nazwisko'] = 'nic'
             request.session['budujacy_imie'] = 'nic'
             request.session['budujacy_nr'] = 'nic'
+            #request.session['nr_wiazki'] = 'nic'
+            #request.session['nr_wiazki_id'] = 0
+            #request.session['nr_zlecenia'] = 'nic'
+            #request.session['ilosc_skontrolowanych'] = 0
             return redirect(nowy_blad_wpis)
         else:
             print('Nie jest VALID!')
@@ -864,6 +862,7 @@ def nowaKarta(request):
         'data_dodania_rok': str(data_dodania_rok),
         'nr_karty': int(nr_karty),
         'wycofana': wycofana,
+        'wiazka': wiazka,
     }
     return render(request, 'bledy/form_karta.html', context)
 
@@ -967,6 +966,233 @@ def is_valid_queryparam(param):
 
 
 @login_required
+def filtrowanie_bledy_n(request):
+    qs = Bledy.objects.filter(skasowany=False)
+    nr_budujacego_contains_query = request.GET.get('nr_budujacego_contains')
+    blad_contains_query = request.GET.get('blad_contains')
+    nr_grupy_roboczej_contains_query = request.GET.get('nr_grupy_roboczej_contains')
+    grupabledow_contains_query = request.GET.get('grupa_bledow_contains')
+    data_od = request.GET.get('data_od')
+    data_do = request.GET.get('data_do')
+    eksport = request.GET.get('eksport')
+
+    if is_valid_queryparam(nr_budujacego_contains_query):
+        qs = qs.filter(nr_budujacego__nr_pracownika__exact=nr_budujacego_contains_query)
+    if is_valid_queryparam(nr_grupy_roboczej_contains_query):
+        qs = qs.filter(nr_grupy_roboczej__nr_grupy__icontains=nr_grupy_roboczej_contains_query)
+    if is_valid_queryparam(grupabledow_contains_query):
+        qs = qs.select_related('blad').filter(blad__grupa_bledow__nazwa__icontains=grupabledow_contains_query)
+    if is_valid_queryparam(blad_contains_query):
+        qs = qs.filter(blad__blad__icontains=blad_contains_query)
+    if is_valid_queryparam(data_od):
+        qs = qs.filter(data_dodania__gte=data_od + ' 00:00:00')
+    if is_valid_queryparam(data_do):
+        qs = qs.filter(data_dodania__lt=data_do + ' 23:59:59')
+
+    lista = []
+    date_start = datetime.strptime('2023-05-28 00:00:00', '%Y-%m-%d %H:%M:%S')
+
+    if eksport == 'on':
+        for obj in qs:
+            if obj.data_dodania >= date_start:
+                qs_karty = Karta.objects.filter(id=obj.nr_karty)
+                for karta2 in qs_karty:
+                    budujacy = "{} {}".format(obj.nr_budujacego.nazwisko, obj.nr_budujacego.imie)
+                    #print('nr_karty: {}/{}/{}'.format(karta2.nr_karty, karta2.data_karty_miesiac, karta2.data_karty_rok))
+                    #print('nr wiązki: {} || nr zlecenia: {} || wadliwych: {}'.format(karta2.nr_wiazki,karta2.nr_zlecenia,karta2.ilosc_wadliwych))
+                    #print('nr_budujacego: {} || blad: {}'.format(obj.nr_budujacego, obj.blad, obj.opis))
+                    lista.append((
+                        '{}/{}/{}'.format(karta2.nr_karty, karta2.data_karty_miesiac, karta2.data_karty_rok),
+                        karta2.nr_wiazki,
+                        karta2.nr_zlecenia,
+                        karta2.ilosc_wadliwych,
+                        obj.nr_budujacego,
+                        budujacy,
+                        obj.nr_grupy_roboczej,
+                        obj.blad,
+                        obj.opis,
+                        obj.blad.grupa_bledow,
+                        karta2.nr_wiazki.nazwa_klienta,
+                        karta2.autor_wpisu,
+                        karta2.data_dodania)
+                    )
+                print('- ' * 40)
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="eksport_bledy.csv"'
+        response.write(u'\ufeff'.encode('utf8'))
+
+        writer = csv.writer(response, dialect='excel', delimiter=';')
+        writer.writerow(
+            [
+                'Nr karty',
+                'Nr wiazki',
+                'Nr zlecenia',
+                'Ilość wadliwych',
+                'Nr oosoby budującej',
+                'Budujacy',
+                'Nr grupy roboczej',
+                'Blad',
+                'opis',
+                'GrupaBledow',
+                'Nazwa klienta',
+                'autor_wpisu',
+                'data_dodania'
+            ]
+        )
+
+        for wiersz in lista:
+            writer.writerow(
+                [
+                    wiersz[0],
+                    wiersz[1],
+                    wiersz[2],
+                    wiersz[3],
+                    wiersz[4],
+                    wiersz[5],
+                    wiersz[6],
+                    wiersz[7],
+                    wiersz[8],
+                    wiersz[9],
+                    wiersz[10],
+                    wiersz[11],
+                    wiersz[12]
+                ]
+            )
+        return response
+
+
+
+    context = {
+        'queryset': qs,
+    }
+    return render(request, 'bledy/eksport_bledy.html', context)
+
+@login_required
+def filtrowanie_karty_n(request):
+    qs = Karta.objects.filter(wycofana=False)
+    nr_wiazki_contains_query = request.GET.get('nr_wiazki_contains')
+    nr_zlecenia_contains_query = request.GET.get('nr_zlecenia_contains')
+    klient_contains_query = request.GET.get('klient_contains')
+    data_od = request.GET.get('data_od')
+    data_do = request.GET.get('data_do')
+    eksport = request.GET.get('eksport')
+
+    if is_valid_queryparam(nr_wiazki_contains_query):
+        qs = qs.filter(nr_wiazki__nazwa_wiazki__icontains=nr_wiazki_contains_query)
+    if is_valid_queryparam(nr_zlecenia_contains_query):
+        qs = qs.filter(nr_zlecenia__icontains=nr_zlecenia_contains_query)
+    if is_valid_queryparam(klient_contains_query):
+        qs = qs.select_related('nr_wiazki').filter(nr_wiazki__nazwa_klienta__nazwa_klienta__icontains=klient_contains_query)
+    if is_valid_queryparam(data_od):
+        qs = qs.filter(data_dodania__gte=data_od + ' 00:00:00')
+    if is_valid_queryparam(data_do):
+        qs = qs.filter(data_dodania__lt=data_do + ' 23:59:59')
+
+    lista = []
+
+    date_start = datetime.strptime('2023-05-28 00:00:00', '%Y-%m-%d %H:%M:%S')
+
+    if eksport == 'on':
+        for obj in qs:
+            if obj.data_dodania >= date_start:
+                qs_bledy = Bledy.objects.filter(nr_karty = obj.id)
+                if len(qs_bledy) > 0:
+                    for blad2 in qs_bledy:
+                        budujacy = "{} {}".format(blad2.nr_budujacego.nazwisko, blad2.nr_budujacego.imie)
+                        #print('nr_karty: {}/{}/{}'.format(obj.nr_karty,obj.data_karty_miesiac,obj.data_karty_rok))
+                        #print('nr wiązki: {} || nr zlecenia: {} || wadliwych: {}'.format(obj.nr_wiazki,obj.nr_zlecenia,obj.ilosc_wadliwych))
+                        #print('nr_budujacego: {} || nr_grupy_roboczej: {} || blad: {}'.format(budujacy,blad2.nr_grupy_roboczej,blad2.blad))
+                        #print('klient: {}'.format(obj.nr_wiazki.nazwa_klienta))
+                        lista.append((
+                            '{}/{}/{}'.format(obj.nr_karty,obj.data_karty_miesiac,obj.data_karty_rok),
+                            obj.nr_wiazki,
+                            obj.nr_zlecenia,
+                            obj.ilosc_wadliwych,
+                            blad2.nr_budujacego,
+                            budujacy,
+                            blad2.nr_grupy_roboczej,
+                            blad2.blad,
+                            blad2.opis,
+                            blad2.blad.grupa_bledow,
+                            obj.nr_wiazki.nazwa_klienta,
+                            obj.autor_wpisu,
+                            obj.data_dodania)
+                        )
+                else:
+                    #print('-->> nr_karty: {}/{}/{}'.format(obj.nr_karty, obj.data_karty_miesiac, obj.data_karty_rok))
+                    #print('-->> nr wiązki: {} || nr zlecenia: {} || wadliwych: {}'.format(obj.nr_wiazki, obj.nr_zlecenia, obj.ilosc_wadliwych))
+                    #print('-->> nr_budujacego: brak || nr_grupy_roboczej: brak || blad: 0')
+                    lista.append((
+                        '{}/{}/{}'.format(obj.nr_karty, obj.data_karty_miesiac, obj.data_karty_rok),
+                        obj.nr_wiazki,
+                        obj.nr_zlecenia,
+                        obj.ilosc_wadliwych,
+                        'brak',
+                        'brak',
+                        'brak',
+                        'brak',
+                        'brak',
+                        'brak',
+                        obj.nr_wiazki.nazwa_klienta,
+                        obj.autor_wpisu,
+                        obj.data_dodania)
+                    )
+                print('- '*40)
+
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="eksport_karty.csv"'
+        response.write(u'\ufeff'.encode('utf8'))
+
+        writer = csv.writer(response, dialect='excel', delimiter=';')
+        writer.writerow(
+            [
+                'Nr karty',
+                'Nr wiazki',
+                'Nr zlecenia',
+                'Ilość wadliwych',
+                'Nr oosoby budującej',
+                'Budujacy',
+                'Nr grupy roboczej',
+                'Blad',
+                'opis',
+                'GrupaBledow',
+                'Nazwa klienta',
+                'autor_wpisu',
+                'data_dodania'
+            ]
+        )
+
+        for wiersz in lista:
+            writer.writerow(
+                [
+                    wiersz[0],
+                    wiersz[1],
+                    wiersz[2],
+                    wiersz[3],
+                    wiersz[4],
+                    wiersz[5],
+                    wiersz[6],
+                    wiersz[7],
+                    wiersz[8],
+                    wiersz[9],
+                    wiersz[10],
+                    wiersz[11],
+                    wiersz[12]
+                ]
+            )
+        return response
+
+
+
+    context = {
+        'queryset': qs,
+    }
+    return render(request, 'bledy/eksport_karty.html', context)
+
+
+@login_required
 def filtrowanie(request):
     qs = Bledy.objects.filter(skasowany=False)
     #qs = Bledy.objects.all()
@@ -1004,10 +1230,12 @@ def filtrowanie(request):
     if is_valid_queryparam(data_do):
         qs = qs.filter(data_dodania__lt=data_do + ' 23:59:59')
 
+    date_end = datetime.strptime('2023-05-28 00:00:00', '%Y-%m-%d %H:%M:%S')
+
     if eksport == 'on':
 
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="eksport.csv"'
+        response['Content-Disposition'] = 'attachment; filename="eksport_stary.csv"'
         response.write(u'\ufeff'.encode('utf8'))
 
         #mojaData = datetime.now()
@@ -1035,30 +1263,31 @@ def filtrowanie(request):
         )
 
         for obj in qs:
-            budujacy = "{} {}".format(obj.nr_budujacego.nazwisko, obj.nr_budujacego.imie)
-            writer.writerow(
-                [
-                    obj.nr_wiazki,
-                    obj.nr_wiazki.nazwa_klienta,
-                    obj.nr_grupy_roboczej,
-                    obj.nr_zlecenia,
-                    obj.nr_budujacego,
-                    budujacy,
-                    obj.ilosc_skontrolowanych,
-                    obj.ilosc_bledow,
-                    obj.blad,
-                    obj.blad.grupa_bledow,
-                    obj.opis,
-                    obj.autor_wpisu,
-                    obj.data_dodania
-                ]
-            )
+            if obj.data_dodania < date_end:
+                budujacy = "{} {}".format(obj.nr_budujacego.nazwisko, obj.nr_budujacego.imie)
+                writer.writerow(
+                    [
+                        obj.nr_wiazki,
+                        obj.nr_wiazki.nazwa_klienta,
+                        obj.nr_grupy_roboczej,
+                        obj.nr_zlecenia,
+                        obj.nr_budujacego,
+                        budujacy,
+                        obj.ilosc_skontrolowanych,
+                        obj.ilosc_bledow,
+                        obj.blad,
+                        obj.blad.grupa_bledow,
+                        obj.opis,
+                        obj.autor_wpisu,
+                        obj.data_dodania
+                    ]
+                )
         return response
 
     context = {
         'queryset': qs,
     }
-    return render(request, 'bledy/eksport.html', context)
+    return render(request, 'bledy/eksport2.html', context)
 
 
 

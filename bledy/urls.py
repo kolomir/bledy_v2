@@ -5,7 +5,7 @@ from .views import ostatnie_wpisy, nowy_klient, edytuj_klient, wpisyKlient, usun
                 nowy_blad, edytuj_blad, wpisyBlad, usun_blad, przywroc_blad, \
                 nowa_wiazka, edytuj_wiazka, wpisyWiazka, usun_wiazke, przywroc_wiazke, \
                 nowy_pracownik, edytuj_pracownik, wpisyPracownik, usun_pracownik, przywroc_pracownik, \
-                nowy_blad_wpis, edytuj_blad_wpis, usun_blad_wpis, przywroc_blad_wpis, filtrowanie, \
+                nowy_blad_wpis, edytuj_blad_wpis, usun_blad_wpis, przywroc_blad_wpis, filtrowanie, filtrowanie_karty_n, filtrowanie_bledy_n, \
                 login_request, logout_request, upload_file_view, nowa_grupa_bledow, edytuj_grupa_bledow, \
                 usun_grupa_bledow, przywroc_grupa_bledow, wpisyGrupaBledow, wpisy_lider_dzial, przypisz_lider_dzial, \
                 zakoncz_blad_wpis, nowaKarta, wpisyKarta, wszystkie_wpisy, detal_karta
@@ -73,7 +73,9 @@ urlpatterns = [
     path('przywroc_bledy/<int:id>/', przywroc_blad_wpis, name='przywroc_bledy'),
 
     #= Pozostałe ==========================================
-    path('eksport/', filtrowanie, name='filtrowanie'),
+    path('eksport_karty/', filtrowanie_karty_n, name='filtrowanie karty'),
+    path('eksport_bledy/', filtrowanie_bledy_n, name='filtrowanie błędy'),
+    path('eksport2/', filtrowanie, name='filtrowanie2'),
     path('login/', login_request, name='login'),
     path('logout/', logout_request, name='logout'),
     path('upload/', upload_file_view, name='upload'),

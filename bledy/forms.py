@@ -12,7 +12,10 @@ class KartaForm(ModelForm):
             'data_karty_miesiac',
             'data_karty_rok',
             'data_dodania',
-            'wycofana'
+            'wycofana',
+            'nr_wiazki',
+            'nr_zlecenia',
+            'ilosc_wadliwych'
         ]
 
 
@@ -140,7 +143,7 @@ class SkasowacPracownik(ModelForm):
 class BledyForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(BledyForm, self).__init__(*args, **kwargs)
-        self.fields['nr_wiazki'] = forms.ModelChoiceField(queryset=Wiazka.objects.filter(aktywny=True))
+        #self.fields['nr_wiazki'] = forms.ModelChoiceField(queryset=Wiazka.objects.filter(aktywny=True))
         self.fields['nr_grupy_roboczej'] = forms.ModelChoiceField(queryset=GrupaRobocza.objects.filter(aktywna=True))
         self.fields['nr_budujacego'] = forms.ModelChoiceField(queryset=Pracownik.objects.filter(zatrudniony=True))
         self.fields['blad'] = forms.ModelChoiceField(queryset=RodzajeBledu.objects.filter(aktywny=True))
@@ -148,12 +151,8 @@ class BledyForm(ModelForm):
     class Meta:
         model = Bledy
         fields = [
-            'nr_wiazki',
             'nr_grupy_roboczej',
-            'nr_zlecenia',
-            'nr_kontrolera',
             'nr_budujacego',
-            'ilosc_skontrolowanych',
             'ilosc_bledow',
             'blad',
             'opis',

@@ -1,0 +1,57 @@
+{% extends 'bledy/base.html' %}
+{% load bootstrap %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="card col-md-6 my-3 mx-auto text-white red darken-1">
+            <div class="card-body">
+                <h2>Eksport danych</h2>
+            </div>
+        </div>
+        <div class="card col-md-6 my-3 mx-auto">
+            <div class="card-body">
+                <form method="get">
+
+                    <div class="form-row mb-3">
+                        <div class="col md-form">
+                            <label class="control-label" for="id_nr_grupy_roboczej">Grupa robocza</label>
+                            <input id="id_nr_grupy_roboczej" class="form-control" type="search" name="nr_grupy_roboczej_contains" placeholder="Grupa robocza..." />
+                        </div>
+                        <div class="col md-form">
+                            <label class="control-label" for="id_nr_budujacego">Budujący</label>
+                            <input id="id_nr_budujacego" class="form-control" type="search" name="nr_budujacego_contains" placeholder="Budujący..." />
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="col md-form">
+                            <label class="control-label" for="id_grupa_bledow">Grupa błędów</label>
+                            <input id="id_grupa_bledow" class="form-control" type="search" name="grupa_bledow_contains" placeholder="Grupa błędów..." />
+                        </div>
+                        <div class="col md-form">
+                            <label class="control-label" for="id_blad">Błąd</label>
+                            <input id="id_blad" class="form-control" type="search" name="blad_contains" placeholder="Błąd..." />
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="col md-form">
+                            <input type="date" class="form-control" id="data_od_id" name="data_od" placeholder="Data od"  />
+                            <label class="control-label" for="data_od_id">Data od</label>
+                        </div>
+                        <div class="col md-form">
+                            <input type="date" class="form-control" id="data_do_id" name="data_do" placeholder="Data do"  />
+                            <label class="control-label" for="data_do_id">Data do</label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="eksport" name="eksport" value="on">
+                    <div class="form-row mb-3">
+                        <div class="col">
+                            <button type="submit" class="btn btn-outline-primary btn-rounded waves-effect">Zapisz</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}

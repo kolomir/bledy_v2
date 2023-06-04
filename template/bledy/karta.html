@@ -9,6 +9,30 @@
             <div class="card-body">
                 <h3 class="card-title">Karta nr {{ wpis.id }}/{{ wpis.data_karty_miesiac }}/{{ wpis.data_karty_rok }}</h3>
                 <p class="card-text">z dnia {{ wpis.data_dodania }}</p>
+
+                <div class="d-flex justify-content-center">
+                <div class="col-6">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nr wiazki</th>
+                                <th>Nr zlecenia</th>
+                                <th>Ilość wadliwych</th>
+                                <th>Autor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ wpis.nr_wiazki }}</td>
+                                <td>{{ wpis.nr_zlecenia }}</td>
+                                <td>{{ wpis.ilosc_wadliwych }}</td>
+                                <td>@{{ wpis.autor_wpisu }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+
             </div>
             <div class="card-footer text-muted">
 

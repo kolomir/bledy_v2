@@ -11,15 +11,12 @@
         <table id="dtWszystkieWpisy" class="table table-striped table-hover table-sm table-borderless" cellspacing="0" width="100%">
             <thead class="black white-text">
                 <tr>
-                    <th class="th-sm" width="5%">#</th>
-                    <th class="th-sm" width="5%">Nr wiazki</th>
-                    <th class="th-sm" width="5%">Nr zlecenia</th>
-                    <th class="th-sm" width="5%">Nr budujacego</th>
-                    <th class="th-sm" width="5%">Ilosc skontrolowanych</th>
-                    <th class="th-sm" width="5%">Ilosc bledow</th>
+                    <th class="th-sm">#</th>
+                    <th class="th-sm">Nr karty</th>
+                    <th class="th-sm">Nr budujacego</th>
                     <th class="th-sm">Blad</th>
                     <th class="th-sm">Opis</th>
-                    <th class="th-sm" width="10%">Data dodania</th>
+                    <th class="th-sm">Data dodania</th>
                     {% if user.is_authenticated %}
                     <th class="th-sm" width="5%">#</th>
                     {% endif %}
@@ -29,11 +26,8 @@
                 {% for wpis in wszystkie_wpisy %}
                 <tr>
                     <th scope="row">{{ wpis.id }}</th>
-                    <td>{{ wpis.nr_wiazki }}</td>
-                    <td>{{ wpis.nr_zlecenia }}</td>
+                    <td>{{ wpis.nr_karty }}</td>
                     <td>{{ wpis.nr_budujacego }}</td>
-                    <td>{{ wpis.ilosc_skontrolowanych }}</td>
-                    <td>{{ wpis.ilosc_bledow }}</td>
                     <td>{{ wpis.blad }}</td>
                     <td>{{ wpis.opis }}</td>
                     <td>{{ wpis.data_dodania }}</td>
@@ -55,11 +49,8 @@
             <tfoot class="black white-text">
                 <tr>
                     <th class="th-sm">#</th>
-                    <th class="th-sm">Nr wiazki</th>
-                    <th class="th-sm">Nr zlecenia</th>
+                    <th class="th-sm">Nr karty</th>
                     <th class="th-sm">Nr budujacego</th>
-                    <th class="th-sm">Ilosc skontrolowanych</th>
-                    <th class="th-sm">Ilosc bledow</th>
                     <th class="th-sm">Blad</th>
                     <th class="th-sm">Opis</th>
                     <th class="th-sm">Data dodania</th>

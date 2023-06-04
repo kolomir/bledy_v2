@@ -91,18 +91,14 @@ class Karta(models.Model):
     data_karty_rok = models.DecimalField(max_digits=5, decimal_places=0, default=0, blank=True, null=True)
     data_dodania = models.DateTimeField('data dodania', blank=True, null=True)
     wycofana = models.BooleanField(default=False)
+    nr_wiazki = models.ForeignKey(Wiazka, on_delete=models.CASCADE, default=1)  #
+    nr_zlecenia = models.CharField(max_length=20)  #
+    ilosc_wadliwych = models.DecimalField(max_digits=8, decimal_places=0, default=1)  #
+    autor_wpisu = models.ForeignKey(Autor, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{}/{}/{}".format(self.nr_karty.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
-'''
-class Karta(models.Model):
-    nr_karty = models.DecimalField(max_digits=5, decimal_places=0, default=0)  #
-    data_karty_miesiac = models.DateTimeField('data karty miesiąc', blank=True, null=True)
-    data_karty_rok = models.DateTimeField('data karty rok', blank=True, null=True)
+        return "{}/{}/{}".format(self.id.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
 
-    def __str__(self):
-        return "{}/{}/{}".format(self.nr_karty.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
-'''
 
 class Bledy(models.Model):
 
@@ -112,15 +108,15 @@ class Bledy(models.Model):
     mojaData = datetime.now()
     formatedDate = mojaData.strftime("%Y-%m-%d")
 
-    nr_wiazki = models.ForeignKey(Wiazka, on_delete=models.CASCADE, default=1) #
-    nr_grupy_roboczej = models.ForeignKey(GrupaRobocza, on_delete=models.CASCADE, default=1) #
-    nr_zlecenia = models.CharField(max_length=20) #
+    nr_wiazki = models.ForeignKey(Wiazka, on_delete=models.CASCADE, default=1, blank=True, null=True) # poprawiony
+    nr_grupy_roboczej = models.ForeignKey(GrupaRobocza, on_delete=models.CASCADE, default=1) # >>>>>>>>>> Wymagane
+    nr_zlecenia = models.CharField(max_length=20, blank=True, null=True) # poprawione
     opis = models.TextField(blank=True, null=True)
     nr_kontrolera = models.DecimalField(max_digits=5, decimal_places=0, default=999, blank=True, null=True) #
-    nr_budujacego = models.ForeignKey(Pracownik, on_delete=models.CASCADE, default=1) #
-    ilosc_skontrolowanych = models.DecimalField(max_digits=8, decimal_places=0, default=10) #
-    ilosc_bledow = models.DecimalField(max_digits=5, decimal_places=0, default=1) #
-    blad = models.ForeignKey(RodzajeBledu, on_delete=models.CASCADE, default=1)#
+    nr_budujacego = models.ForeignKey(Pracownik, on_delete=models.CASCADE, default=1) # >>>>>>>>>> Wymagane
+    ilosc_skontrolowanych = models.DecimalField(max_digits=8, decimal_places=0, default=1, blank=True, null=True) # poprawione
+    ilosc_bledow = models.DecimalField(max_digits=5, decimal_places=0, default=1) # >>>>>>>>>> Wymagane
+    blad = models.ForeignKey(RodzajeBledu, on_delete=models.CASCADE, default=1)# >>>>>>>>>> Wymagane
     rodzaj_reklamacji = models.ForeignKey(RodzajReklamacji, on_delete=models.CASCADE, default=1) #
     autor_wpisu = models.ForeignKey(Autor, on_delete=models.CASCADE)
     komputer_user = models.CharField(max_length=10, default=login_username)
@@ -129,7 +125,7 @@ class Bledy(models.Model):
     skasowany = models.BooleanField(default=False)
     zakonczony = models.BooleanField(default=False)
     #nr_karty = models.ForeignKey(Karta,on_delete=models.CASCADE, default=1) #
-    nr_karty = models.DecimalField(max_digits=8, decimal_places=0, default=1) #
+    nr_karty = models.DecimalField(max_digits=8, decimal_places=0, default=1) # >>>>>>>>>> Wymagane
 
     def __str__(self):
         return str(self.nr_wiazki)
