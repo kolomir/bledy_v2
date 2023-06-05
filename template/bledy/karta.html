@@ -44,11 +44,8 @@
                 <thead class="black white-text">
                     <tr>
                         <th class="th-sm" width="5%">#</th>
-                        <th class="th-sm" width="5%">Nr wiazki</th>
-                        <th class="th-sm" width="5%">Nr zlecenia</th>
                         <th class="th-sm" width="5%">Nr budujacego</th>
-                        <th class="th-sm" width="5%">Ilosc skontrolowanych</th>
-                        <th class="th-sm" width="5%">Ilosc bledow</th>
+                        <th class="th-sm" width="5%">Grupa robocza</th>
                         <th class="th-sm">Blad</th>
                         <th class="th-sm">Opis</th>
                         <th class="th-sm" width="10%">Data dodania</th>
@@ -61,23 +58,20 @@
                     {% for wpis in wszystkie_wpisy %}
                     <tr>
                         <th scope="row">{{ wpis.id }}</th>
-                        <td>{{ wpis.nr_wiazki }}</td>
-                        <td>{{ wpis.nr_zlecenia }}</td>
                         <td>{{ wpis.nr_budujacego }}</td>
-                        <td>{{ wpis.ilosc_skontrolowanych }}</td>
-                        <td>{{ wpis.ilosc_bledow }}</td>
+                        <td>{{ wpis.nr_grupy_roboczej }}</td>
                         <td>{{ wpis.blad }}</td>
                         <td>{{ wpis.opis }}</td>
                         <td>{{ wpis.data_dodania }}</td>
                         {% if user.is_authenticated %}
                         <td>
                             {% if id_autor == wpis.autor_wpisu_id %}
-                                <a href="{% url 'bledy_edytujForm' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
-                            {% if wpis.skasowany == 0 %}
-                                <a href="{% url 'usun_bledy' wpis.id %}" title="Usuń wpis" ><i class="fas fa-trash-alt red-text ml-2 fa-2x"></i></a>
-                            {% else %}
-                                <a href="{% url 'bledy_przywroc' wpis.id %}" title="Przywróć wpis" ><i class="fas fa-trash-restore-alt amber-text ml-2 fa-2x"></i></a>
-                            {% endif %}
+                                    <a href="{% url 'bledy_edytujForm' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
+                                {% if wpis.skasowany == 0 %}
+                                    <a href="{% url 'usun_bledy' wpis.id %}" title="Usuń wpis" ><i class="fas fa-trash-alt red-text ml-2 fa-2x"></i></a>
+                                {% else %}
+                                    <a href="{% url 'przywroc_bledy' wpis.id %}" title="Przywróć wpis" ><i class="fas fa-trash-restore-alt amber-text ml-2 fa-2x"></i></a>
+                                {% endif %}
                             {% endif %}
                         </td>
                         {% endif %}
@@ -87,11 +81,8 @@
                 <tfoot class="black white-text">
                     <tr>
                         <th class="th-sm">#</th>
-                        <th class="th-sm">Nr wiazki</th>
-                        <th class="th-sm">Nr zlecenia</th>
                         <th class="th-sm">Nr budujacego</th>
-                        <th class="th-sm">Ilosc skontrolowanych</th>
-                        <th class="th-sm">Ilosc bledow</th>
+                        <th class="th-sm">Grupa robocza</th>
                         <th class="th-sm">Blad</th>
                         <th class="th-sm">Opis</th>
                         <th class="th-sm">Data dodania</th>

@@ -35,7 +35,7 @@
                         <td>{{ wpis.data_dodania }}</td>
                         {% if user.is_authenticated %}
                         <td>
-                            <a href="{% url 'bledy_edytujForm' wpis.id %}" title="Szczegóły" ><i class="fas fa-align-justify indigo-text ml-2 fa-2x"></i></a>
+                            <a href="{% url 'detal_karta' wpis.id %}" title="Szczegóły" ><i class="fas fa-align-justify indigo-text ml-2 fa-2x"></i></a>
                         </td>
                         {% endif %}
                     </tr>

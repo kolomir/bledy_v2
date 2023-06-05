@@ -34,12 +34,12 @@
                     {% if user.is_authenticated %}
                     <td>
                         {% if id_autor == wpis.autor_wpisu_id %}
-                            <a href="{% url 'bledy_edytujForm' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
-                        {% if wpis.skasowany == 0 %}
-                            <a href="{% url 'usun_bledy' wpis.id %}" title="Usuń wpis" ><i class="fas fa-trash-alt red-text ml-2 fa-2x"></i></a>
-                        {% else %}
-                            <a href="{% url 'bledy_przywroc' wpis.id %}" title="Przywróć wpis" ><i class="fas fa-trash-restore-alt amber-text ml-2 fa-2x"></i></a>
-                        {% endif %}
+                                <a href="{% url 'bledy_edytujForm' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
+                            {% if wpis.skasowany == 0 %}
+                                <a href="{% url 'usun_bledy' wpis.id %}" title="Usuń wpis" ><i class="fas fa-trash-alt red-text ml-2 fa-2x"></i></a>
+                            {% else %}
+                                <a href="{% url 'przywroc_bledy' wpis.id %}" title="Przywróć wpis" ><i class="fas fa-trash-restore-alt amber-text ml-2 fa-2x"></i></a>
+                            {% endif %}
                         {% endif %}
                     </td>
                     {% endif %}

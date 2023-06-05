@@ -74,7 +74,7 @@ def ostatnie_wpisy(request):
 
 
 def wszystkie_wpisy(request):
-    wszystkie_wpisy = Bledy.objects.filter(skasowany=False).order_by('-id')
+    wszystkie_wpisy = Bledy.objects.order_by('-id')
 
     if request.user.is_authenticated:
         zglaszajacy_wpisy = get_author(request.user)
@@ -871,10 +871,22 @@ def nowaKarta(request):
 def detal_karta(request, id):
     wpis = get_object_or_404(Karta, pk=id)
     wszystkie_wpisy = Bledy.objects.filter(nr_karty=wpis.id)
+    if request.user.is_authenticated:
+        zglaszajacy_wpisy = get_author(request.user)
+        lista_userow = get_user_model()
+        autor_wpisu = get_object_or_404(lista_userow, username__exact=zglaszajacy_wpisy)
+        lista_autors = Autor.objects.filter(user_id=autor_wpisu.id).values_list('id', flat=True)
+        id_autor = lista_autors[0]
+
+        zalogowany_user = request.user
+        zalogowany_user_id = request.user.id
 
     context = {
         'wpis': wpis,
         'wszystkie_wpisy': wszystkie_wpisy,
+        'zalogowany_user_id': zalogowany_user_id,
+        'zalogowany_user': zalogowany_user,
+        'id_autor': id_autor,
     }
 
     return render(request, 'bledy/karta.html', context)
@@ -895,6 +907,9 @@ def edytuj_blad_wpis(request, id):
     if wpisy.is_valid():
         wpisy.save()
         return redirect(ostatnie_wpisy)
+    else:
+        print('Nie jest VALID!')
+        print('Error: ', wpisy.errors)
 
     context = {
         'wpisy': wpisy,
@@ -1096,7 +1111,7 @@ def filtrowanie_karty_n(request):
     if eksport == 'on':
         for obj in qs:
             if obj.data_dodania >= date_start:
-                qs_bledy = Bledy.objects.filter(nr_karty = obj.id)
+                qs_bledy = Bledy.objects.filter(skasowany=False).filter(nr_karty = obj.id)
                 if len(qs_bledy) > 0:
                     for blad2 in qs_bledy:
                         budujacy = "{} {}".format(blad2.nr_budujacego.nazwisko, blad2.nr_budujacego.imie)
