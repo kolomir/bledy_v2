@@ -818,11 +818,14 @@ def nowaKarta(request):
     if request.method == 'POST':
         if form_karta.is_valid():
             dopisz = form_karta.save(commit=False)
-
+            zolta = False
             autor = get_author(request.user)
             nr_wiazki_id = request.POST.get('nr_wiazki')
             nr_zlecenia = request.POST.get('nr_zlecenia')
             ilosc_wadliwych = request.POST.get('ilosc_wadliwych')
+            zolta_we = request.POST.get('zolta')
+            if zolta_we == 'on':
+                zolta = True
             dopisz.autor_wpisu = autor
             dopisz.nr_karty = int(ostatni_wpis.nr_karty) + 1
             dopisz.data_karty_miesiac = data_dodania_miesiac
@@ -831,6 +834,7 @@ def nowaKarta(request):
             dopisz.nr_wiazki_id = int(nr_wiazki_id)
             dopisz.nr_zlecenia = nr_zlecenia
             dopisz.ilosc_wadliwych = ilosc_wadliwych
+            dopisz.zolta = zolta
             dopisz.save()
             obecny_wpis_1 = Karta.objects.latest('id')
             #print('obecny_wpis_1: ', obecny_wpis_1.id, ' | ',type(obecny_wpis_1.id))
@@ -843,6 +847,7 @@ def nowaKarta(request):
             request.session['budujacy_nazwisko'] = 'nic'
             request.session['budujacy_imie'] = 'nic'
             request.session['budujacy_nr'] = 'nic'
+            request.session['zolta'] = False
             #request.session['nr_wiazki'] = 'nic'
             #request.session['nr_wiazki_id'] = 0
             #request.session['nr_zlecenia'] = 'nic'
@@ -1005,7 +1010,7 @@ def filtrowanie_bledy_n(request):
         qs = qs.filter(data_dodania__lt=data_do + ' 23:59:59')
 
     lista = []
-    date_start = datetime.strptime('2023-05-28 00:00:00', '%Y-%m-%d %H:%M:%S')
+    date_start = datetime.strptime('2023-05-12 00:00:00', '%Y-%m-%d %H:%M:%S')
 
     if eksport == 'on':
         for obj in qs:
@@ -1013,11 +1018,15 @@ def filtrowanie_bledy_n(request):
                 qs_karty = Karta.objects.filter(id=obj.nr_karty)
                 for karta2 in qs_karty:
                     budujacy = "{} {}".format(obj.nr_budujacego.nazwisko, obj.nr_budujacego.imie)
+                    if karta2.zolta == True:
+                        zolta = 'Tak'
+                    else:
+                        zolta = 'Nie'
                     #print('nr_karty: {}/{}/{}'.format(karta2.nr_karty, karta2.data_karty_miesiac, karta2.data_karty_rok))
                     #print('nr wiązki: {} || nr zlecenia: {} || wadliwych: {}'.format(karta2.nr_wiazki,karta2.nr_zlecenia,karta2.ilosc_wadliwych))
                     #print('nr_budujacego: {} || blad: {}'.format(obj.nr_budujacego, obj.blad, obj.opis))
                     lista.append((
-                        '{}/{}/{}'.format(karta2.nr_karty, karta2.data_karty_miesiac, karta2.data_karty_rok),
+                        '{}/{}/{}'.format(karta2.id, karta2.data_karty_miesiac, karta2.data_karty_rok),
                         karta2.nr_wiazki,
                         karta2.nr_zlecenia,
                         karta2.ilosc_wadliwych,
@@ -1026,6 +1035,7 @@ def filtrowanie_bledy_n(request):
                         obj.nr_grupy_roboczej,
                         obj.blad,
                         obj.opis,
+                        zolta,
                         obj.blad.grupa_bledow,
                         karta2.nr_wiazki.nazwa_klienta,
                         karta2.autor_wpisu,
@@ -1049,6 +1059,7 @@ def filtrowanie_bledy_n(request):
                 'Nr grupy roboczej',
                 'Blad',
                 'opis',
+                'żółta',
                 'GrupaBledow',
                 'Nazwa klienta',
                 'autor_wpisu',
@@ -1071,7 +1082,8 @@ def filtrowanie_bledy_n(request):
                     wiersz[9],
                     wiersz[10],
                     wiersz[11],
-                    wiersz[12]
+                    wiersz[12],
+                    wiersz[13]
                 ]
             )
         return response
@@ -1106,12 +1118,16 @@ def filtrowanie_karty_n(request):
 
     lista = []
 
-    date_start = datetime.strptime('2023-05-28 00:00:00', '%Y-%m-%d %H:%M:%S')
+    date_start = datetime.strptime('2023-06-12 00:00:00', '%Y-%m-%d %H:%M:%S')
 
     if eksport == 'on':
         for obj in qs:
             if obj.data_dodania >= date_start:
                 qs_bledy = Bledy.objects.filter(skasowany=False).filter(nr_karty = obj.id)
+                if obj.zolta == True:
+                    zolta = 'Tak'
+                else:
+                    zolta = 'Nie'
                 if len(qs_bledy) > 0:
                     for blad2 in qs_bledy:
                         budujacy = "{} {}".format(blad2.nr_budujacego.nazwisko, blad2.nr_budujacego.imie)
@@ -1120,7 +1136,7 @@ def filtrowanie_karty_n(request):
                         #print('nr_budujacego: {} || nr_grupy_roboczej: {} || blad: {}'.format(budujacy,blad2.nr_grupy_roboczej,blad2.blad))
                         #print('klient: {}'.format(obj.nr_wiazki.nazwa_klienta))
                         lista.append((
-                            '{}/{}/{}'.format(obj.nr_karty,obj.data_karty_miesiac,obj.data_karty_rok),
+                            '{}/{}/{}'.format(obj.id,obj.data_karty_miesiac,obj.data_karty_rok),
                             obj.nr_wiazki,
                             obj.nr_zlecenia,
                             obj.ilosc_wadliwych,
@@ -1129,6 +1145,7 @@ def filtrowanie_karty_n(request):
                             blad2.nr_grupy_roboczej,
                             blad2.blad,
                             blad2.opis,
+                            zolta,
                             blad2.blad.grupa_bledow,
                             obj.nr_wiazki.nazwa_klienta,
                             obj.autor_wpisu,
@@ -1143,6 +1160,7 @@ def filtrowanie_karty_n(request):
                         obj.nr_wiazki,
                         obj.nr_zlecenia,
                         obj.ilosc_wadliwych,
+                        'brak',
                         'brak',
                         'brak',
                         'brak',
@@ -1172,6 +1190,7 @@ def filtrowanie_karty_n(request):
                 'Nr grupy roboczej',
                 'Blad',
                 'opis',
+                'żółta',
                 'GrupaBledow',
                 'Nazwa klienta',
                 'autor_wpisu',
@@ -1194,7 +1213,8 @@ def filtrowanie_karty_n(request):
                     wiersz[9],
                     wiersz[10],
                     wiersz[11],
-                    wiersz[12]
+                    wiersz[12],
+                    wiersz[13]
                 ]
             )
         return response

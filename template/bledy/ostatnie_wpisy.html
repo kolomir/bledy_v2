@@ -130,6 +130,7 @@
                     <th class="th-sm" width="15%">Nr wiazki</th>
                     <th class="th-sm" width="15%">Nr zlecenia</th>
                     <th class="th-sm" width="3%">Ilość wadliwych</th>
+                    <th class="th-sm" width="3%">Żółta</th>
                     <th class="th-sm" width="10%">Data wystawnienia</th>
                     {% if user.is_authenticated %}
                     <th class="th-sm" width="5%">#</th>
@@ -144,6 +145,15 @@
                     <td>{{ wpis.nr_wiazki }}</td>
                     <td>{{ wpis.nr_zlecenia }}</td>
                     <td>{{ wpis.ilosc_wadliwych }}</td>
+                    <td>
+
+                        {% if wpis.zolta %}
+                            <i class="far fa-check-square"></i>
+                        {% else %}
+                            <i class="far fa-square"></i>
+                        {% endif %}
+
+                    </td>
                     <td>{{ wpis.data_dodania }}</td>
                     {% if user.is_authenticated %}
                     <td>
@@ -160,6 +170,7 @@
                     <th class="th-sm">Nr wiazki</th>
                     <th class="th-sm">Nr zlecenia</th>
                     <th class="th-sm">Ilość wadliwych</th>
+                    <th class="th-sm" width="3%">Żółta</th>
                     <th class="th-sm" width="10%">Data wystawnienia</th>
                     {% if user.is_authenticated %}
                     <th class="th-sm" width="5%">#</th>
