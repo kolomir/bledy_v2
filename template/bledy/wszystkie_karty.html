@@ -2,13 +2,13 @@
 {% block content %}
 
     <div class="container-fluid">
-        <div class="card col-md-8 my-3 mx-auto text-white red darken-1">
+        <div class="card col-md-12 my-3 mx-auto text-white red darken-1">
             <div class="card-body">
                 <h2>Karta - wpisy</h2>
             </div>
         </div>
 
-        <div class="card col-md-8 my-3 mx-auto">
+        <div class="card col-md-12 my-3 mx-auto">
 
             <table id="dtOstatnieKarty" class="table table-striped table-hover table-sm table-borderless" cellspacing="0" width="100%">
                 <thead class="black white-text">
@@ -19,6 +19,7 @@
                         <th class="th-sm" width="15%">Nr zlecenia</th>
                         <th class="th-sm" width="3%">Ilość wadliwych</th>
                         <th class="th-sm" width="2%">Żółta</th>
+                        <th class="th-sm" width="2%">Druk</th>
                         <th class="th-sm" width="15%">Data wystawnienia</th>
                         {% if user.is_authenticated %}
                         <th class="th-sm" width="5%">#</th>
@@ -42,6 +43,15 @@
                             {% endif %}
 
                         </td>
+                        <td>
+
+                            {% if wpis.wydrukowana %}
+                                <i class="far fa-check-square"></i>
+                            {% else %}
+                                <i class="far fa-square"></i>
+                            {% endif %}
+
+                        </td>
                         <td>{{ wpis.data_dodania }}</td>
                         {% if user.is_authenticated %}
                         <td>
@@ -59,6 +69,7 @@
                         <th class="th-sm">Nr zlecenia</th>
                         <th class="th-sm">Ilość wadliwych</th>
                         <th class="th-sm">Żółta</th>
+                        <th class="th-sm">Druk</th>
                         <th class="th-sm">Data wystawnienia</th>
                         {% if user.is_authenticated %}
                         <th class="th-sm">#</th>

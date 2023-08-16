@@ -96,6 +96,7 @@ class Karta(models.Model):
     ilosc_wadliwych = models.DecimalField(max_digits=8, decimal_places=0, default=1)  #
     autor_wpisu = models.ForeignKey(Autor, on_delete=models.CASCADE)
     zolta = models.BooleanField(default=False)
+    wydrukowana = models.BooleanField(default=False)
 
     def __str__(self):
         return "{}/{}/{}".format(self.id.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())

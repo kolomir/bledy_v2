@@ -18,6 +18,8 @@
                                 <th>Nr wiazki</th>
                                 <th>Nr zlecenia</th>
                                 <th>Ilość wadliwych</th>
+                                <th>Żółta</th>
+                                <th>Druk</th>
                                 <th>Autor</th>
                             </tr>
                         </thead>
@@ -26,6 +28,20 @@
                                 <td>{{ wpis.nr_wiazki }}</td>
                                 <td>{{ wpis.nr_zlecenia }}</td>
                                 <td>{{ wpis.ilosc_wadliwych }}</td>
+                                <td>
+                                    {% if wpis.zolta %}
+                                        <i class="far fa-check-square"></i>
+                                    {% else %}
+                                        <i class="far fa-square"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if wpis.wydrukowana %}
+                                        <i class="far fa-check-square"></i>
+                                    {% else %}
+                                        <i class="far fa-square"></i>
+                                    {% endif %}
+                                </td>
                                 <td>@{{ wpis.autor_wpisu }}</td>
                             </tr>
                         </tbody>

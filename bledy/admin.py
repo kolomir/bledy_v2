@@ -18,8 +18,8 @@ class BladAdmin(admin.ModelAdmin):
 
 @admin.register(Karta)
 class KartaAdmin(admin.ModelAdmin):
-    list_display = ('nr_karty', 'data_karty_miesiac', 'data_karty_rok', 'data_dodania', 'wycofana')
-    list_filter = ('data_karty_miesiac', 'data_karty_rok', 'wycofana')
+    list_display = ('nr_karty', 'data_karty_miesiac', 'data_karty_rok', 'data_dodania', 'wycofana', 'zolta', 'wydrukowana')
+    list_filter = ('data_karty_miesiac', 'data_karty_rok', 'wycofana', 'zolta', 'wydrukowana')
     search_fields = ('nr_karty', 'data_karty_miesiac', 'data_karty_rok', 'data_dodania', 'wycofana')
 
 
