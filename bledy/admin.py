@@ -74,7 +74,7 @@ class RodzajReklamacji(admin.ModelAdmin):
 
 @admin.register(Autor)
 class AutorAdmin(admin.ModelAdmin):
-    list_display = ('user', 'dzial')
+    list_display = ('user', 'dzial', 'lider', 'kontrol', 'jakosc')
     list_filter = ('dzial',)
 
 

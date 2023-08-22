@@ -26,12 +26,14 @@
                         <td>{{ wpis.nr_grupy }}</td>
                         {% if user.is_authenticated %}
                         <td>
+                            {% if jakosc_grupa == 1 %}
                             <a href="{% url 'grupyFormedytuj' wpis.id %}" class="btn btn-outline-primary btn-rounded waves-effect btn-sm mr-2">Edytuj</a>
-                        {% if wpis.aktywna == 1 %}
+                                {% if wpis.aktywna == 1 %}
                             <a href="{% url 'usun_grupa' wpis.id %}" class="btn btn-outline-danger btn-rounded waves-effect btn-sm">Usuń</a>
-                        {% else %}
+                                {% else %}
                             <a href="{% url 'przywroc_grupa' wpis.id %}" class="btn btn-outline-success btn-rounded waves-effect btn-sm">Przywróć</a>
-                        {% endif %}
+                                {% endif %}
+                            {% endif %}
                         </td>
                         {% endif %}
                     </tr>

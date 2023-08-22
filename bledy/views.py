@@ -35,6 +35,11 @@ def ostatnie_wpisy(request):
         zalogowany_user = request.user
         zalogowany_user_id = request.user.id
 
+        dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+        lider_grupa = int(dostepy.lider)
+        kontrol_grupa = int(dostepy.kontrol)
+        jakosc_grupa = int(dostepy.jakosc)
+
         department_ids = Lider_dzial.objects.filter(user_id=zalogowany_user_id).values_list('dzial_id',flat=True)
         wpisy_lider = Bledy.objects.filter(nr_grupy_roboczej__in=department_ids).filter(zakonczony=0)
 
@@ -68,6 +73,9 @@ def ostatnie_wpisy(request):
         'zalogowany_user': zalogowany_user,
         'id_autor': id_autor,
         'karta': karta,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
 
     return render(request, 'bledy/ostatnie_wpisy.html', context)
@@ -120,8 +128,17 @@ def przypisz_lider_dzial(request):
 def wpisy_lider_dzial(request):
     lider_dzial = Lider_dzial.objects.all().order_by('user')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'lider_dzial': lider_dzial
+        'lider_dzial': lider_dzial,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request,'bledy/lider_dzial.html',context)
 
@@ -196,8 +213,17 @@ def przywroc_klient(request, id):
 def wpisyKlient(request):
     klienci = Klient.objects.all().order_by('nazwa_klienta')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'klienci': klienci
+        'klienci': klienci,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request,'bledy/klienci.html',context)
 
@@ -272,8 +298,17 @@ def przywroc_grupa_bledow(request, id):
 def wpisyGrupaBledow(request):
     grupy_bledow = GrupaBledow.objects.all().order_by('nazwa')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'grupy_bledow': grupy_bledow
+        'grupy_bledow': grupy_bledow,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request, 'bledy/grupybledow.html', context)
 
@@ -348,8 +383,17 @@ def przywroc_grupa(request, id):
 def wpisyGrupaRobocza(request):
     grupy_robocze = GrupaRobocza.objects.all().order_by('nr_grupy')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'grupy_robocze': grupy_robocze
+        'grupy_robocze': grupy_robocze,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request, 'bledy/grupyrobocze.html', context)
 
@@ -424,8 +468,17 @@ def przywroc_dzial(request, id):
 def wpisyDzialy(request):
     dzialy = Dzial.objects.all().order_by('dzial')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'dzialy': dzialy
+        'dzialy': dzialy,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request,'bledy/dzialy.html',context)
 
@@ -506,8 +559,17 @@ def przywroc_blad(request, id):
 def wpisyBlad(request):
     bledy = RodzajeBledu.objects.all().order_by('blad')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'bledy': bledy
+        'bledy': bledy,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request, 'bledy/bledy.html', context)
 
@@ -586,8 +648,17 @@ def przywroc_wiazke(request, id):
 def wpisyWiazka(request):
     wiazka = Wiazka.objects.all().order_by('nazwa_wiazki')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'wiazka': wiazka
+        'wiazka': wiazka,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request,'bledy/wiazka.html',context)
 
@@ -665,8 +736,17 @@ def przywroc_pracownik(request, id):
 def wpisyPracownik(request):
     pracownik = Pracownik.objects.all().order_by('nr_pracownika')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+
     context = {
-        'pracownik': pracownik
+        'pracownik': pracownik,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
     return render(request,'bledy/pracownik.html',context)
 

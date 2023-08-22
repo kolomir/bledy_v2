@@ -29,12 +29,14 @@
                     <td>{{ wpis.nazwa_klienta }}</td>
                     {% if user.is_authenticated %}
                     <td>
+                        {% if jakosc_grupa == 1 %}
                         <a href="{% url 'wiazkaFormedytuj' wpis.id %}" class="btn btn-outline-primary btn-rounded waves-effect btn-sm mr-2">Edytuj</a>
-                    {% if wpis.aktywny == 1 %}
+                            {% if wpis.aktywny == 1 %}
                         <a href="{% url 'usun_wiazke' wpis.id %}" class="btn btn-outline-danger btn-rounded waves-effect btn-sm">Usuń</a>
-                    {% else %}
+                            {% else %}
                         <a href="{% url 'przywroc_wiazke' wpis.id %}" class="btn btn-outline-success btn-rounded waves-effect btn-sm">Przywróć</a>
-                    {% endif %}
+                            {% endif %}
+                        {% endif %}
                     </td>
                     {% endif %}
                 </tr>

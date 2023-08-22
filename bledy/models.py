@@ -72,6 +72,9 @@ class Pracownik(models.Model):
 class Autor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     dzial = models.ForeignKey(Dzial, on_delete=models.CASCADE)
+    lider = models.BooleanField(default=False)
+    kontrol = models.BooleanField(default=False)
+    jakosc = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
