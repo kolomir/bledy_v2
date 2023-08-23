@@ -12,34 +12,32 @@
         <table id="dtWszystkieTwojeWpisy" class="table table-striped table-hover table-sm table-borderless" cellspacing="0" width="100%">
             <thead class="black white-text">
                 <tr>
-                    <th class="th-sm">#</th>
-                    <th class="th-sm">Nr karty</th>
-                    <th class="th-sm">Nr budujacego</th>
+                    <th class="th-sm" width="5%">Nr karty</th>
+                    <th class="th-sm" width="5%">Nr budujacego</th>
                     <th class="th-sm">Blad</th>
                     <th class="th-sm">Opis</th>
-                    <th class="th-sm">Data dodania</th>
-                    <th class="th-sm" width="5%">#</th>
+                    <th class="th-sm" width="15%">Data dodania</th>
+                    <th class="th-sm" width="10%">#</th>
                 </tr>
             </thead>
             <tbody>
                 {% for wpis in wpisy_lider %}
                 <tr>
-                    <th scope="row">{{ wpis.id }}</th>
                     <td>{{ wpis.nr_karty }}</td>
                     <td>{{ wpis.nr_budujacego }}</td>
                     <td>{{ wpis.blad }}</td>
                     <td>{{ wpis.opis }}</td>
                     <td>{{ wpis.data_dodania }}</td>
                     <td>
-                        <a href="{% url 'zakoncz_bledy' wpis.id %}" title="Zakończ zadanie" ><i class="fas fa-check-square green-text ml-2 fa-2x"></i></a>
+                        <a href="{% url 'detal_karta' wpis.nr_karty %}" title="Szczegóły" ><i class="fas fa-align-justify indigo-text ml-2 fa-2x"></i></a>
                         <a href="{% url 'bledy_edytujForm' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
+                        <a href="{% url 'zakoncz_bledy' wpis.id %}" title="Zakończ zadanie" ><i class="fas fa-check-square green-text ml-2 fa-2x"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
             <tfoot class="black white-text">
                 <tr>
-                    <th class="th-sm">#</th>
                     <th class="th-sm">Nr karty</th>
                     <th class="th-sm">Nr budujacego</th>
                     <th class="th-sm">Blad</th>

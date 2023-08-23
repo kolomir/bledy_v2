@@ -101,6 +101,9 @@ class Karta(models.Model):
     zolta = models.BooleanField(default=False)
     wydrukowana = models.BooleanField(default=False)
 
+    def numerKarty(self):
+        return self.pk
+
     def __str__(self):
         return "{}/{}/{}".format(self.id.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
 

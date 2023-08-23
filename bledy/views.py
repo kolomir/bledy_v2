@@ -23,7 +23,7 @@ def get_author(user):
 
 def ostatnie_wpisy(request):
     wszystkie_wpisy = Bledy.objects.filter(skasowany=False).order_by('-id')[:300]
-    karta = Karta.objects.filter(wycofana=False).order_by('-id')[:100]
+    karta = Karta.objects.filter(wycofana=False).order_by('-id')[:200]
 
     if request.user.is_authenticated:
         zglaszajacy_wpisy = get_author(request.user)
@@ -42,6 +42,13 @@ def ostatnie_wpisy(request):
 
         department_ids = Lider_dzial.objects.filter(user_id=zalogowany_user_id).values_list('dzial_id',flat=True)
         wpisy_lider = Bledy.objects.filter(nr_grupy_roboczej__in=department_ids).filter(zakonczony=0)
+        karta_wpis = Bledy.objects.filter(nr_karty__in=karta).filter(zakonczony=0)
+        #karta_wpis = Karta.objects.filter(wpisy_lider__in=pk).order_by('-id')
+
+        print('wpisyLider', wpisy_lider)
+
+        for wpisyLider in wpisy_lider:
+            print('wpisyLider-karta', wpisyLider.nr_karty)
 
         # - info -------------------------------------------------------------------------
         '''
@@ -94,11 +101,19 @@ def wszystkie_wpisy(request):
         zalogowany_user = request.user
         zalogowany_user_id = request.user.id
 
+        dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+        lider_grupa = int(dostepy.lider)
+        kontrol_grupa = int(dostepy.kontrol)
+        jakosc_grupa = int(dostepy.jakosc)
+
     context = {
         'wszystkie_wpisy': wszystkie_wpisy,
         'zalogowany_user_id': zalogowany_user_id,
         'zalogowany_user': zalogowany_user,
         'id_autor': id_autor,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
 
     return render(request, 'bledy/wszystkie_wpisy.html', context)
@@ -980,6 +995,7 @@ def detal_karta(request, id):
 @login_required
 def edytuj_blad_wpis(request, id):
     wpis = get_object_or_404(Bledy, pk=id)
+    karta_wpis = Karta.objects.filter(pk=wpis.nr_karty)
 
     wpisy = BledyForm(request.POST or None, request.FILES or None, instance=wpis)
     wiazka = Wiazka.objects.filter(aktywny=True).order_by('nazwa_wiazki')
@@ -988,6 +1004,14 @@ def edytuj_blad_wpis(request, id):
     rodzajBledu = RodzajeBledu.objects.filter(aktywny=True).order_by('blad')
     moja_Data = datetime.now()
     data_dodania = moja_Data.strftime("%Y-%m-%d")
+
+    print('wiązka - numer karty: ', wpis.id)
+    print('wiązka - numer karty: ', wpis.nr_karty)
+    for kartaWpis in karta_wpis:
+        print('karta - numer karty: ', kartaWpis)
+        print('karta - numer karty: ', kartaWpis.id)
+        print('karta - numer karty: ', kartaWpis.nr_zlecenia)
+        print('karta - numer karty: ', kartaWpis.nr_wiazki)
 
     if wpisy.is_valid():
         wpisy.save()
