@@ -31,7 +31,11 @@
                     <td>
                         <a href="{% url 'detal_karta' wpis.nr_karty %}" title="Szczegóły" ><i class="fas fa-align-justify indigo-text ml-2 fa-2x"></i></a>
                         <a href="{% url 'bledy_edytujForm' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
-                        <a href="{% url 'zakoncz_bledy' wpis.id %}" title="Zakończ zadanie" ><i class="fas fa-check-square green-text ml-2 fa-2x"></i></a>
+                        {% if wpis.nr_budujacego.id == 7 %}
+                            <i class="fas fa-check-square red-text ml-2 fa-2x"></i>
+                        {% else %}
+                            <a href="{% url 'zakoncz_bledy' wpis.id %}" title="Zakończ zadanie" ><i class="fas fa-check-square green-text ml-2 fa-2x"></i></a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

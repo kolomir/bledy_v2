@@ -45,10 +45,11 @@ def ostatnie_wpisy(request):
         karta_wpis = Bledy.objects.filter(nr_karty__in=karta).filter(zakonczony=0)
         #karta_wpis = Karta.objects.filter(wpisy_lider__in=pk).order_by('-id')
 
-        print('wpisyLider', wpisy_lider)
+        #print('wpisyLider', wpisy_lider)
 
-        for wpisyLider in wpisy_lider:
-            print('wpisyLider-karta', wpisyLider.nr_karty)
+        #for wpisyLider in wpisy_lider:
+        #    print('wpisyLider-karta', wpisyLider.nr_karty)
+
 
         # - info -------------------------------------------------------------------------
         '''
@@ -72,6 +73,9 @@ def ostatnie_wpisy(request):
         department_ids = ""
         wpisy_lider = ""
         id_autor = ""
+        lider_grupa = ''
+        kontrol_grupa = ''
+        jakosc_grupa = ''
 
     context = {
         'wszystkie_wpisy': wszystkie_wpisy,
@@ -1294,7 +1298,7 @@ def filtrowanie_karty_n(request):
                 'Nr grupy roboczej',
                 'Blad',
                 'opis',
-                'żółta',
+                'Informacyjna',
                 'GrupaBledow',
                 'Nazwa klienta',
                 'autor_wpisu',
@@ -1521,3 +1525,20 @@ def upload_file_view(request):
     return render(request, 'bledy/form_upload.html', context)
 
 
+@login_required
+def detal_karta_test(request):
+    wszystkie_karty = Karta.objects.filter(wycofana=False).order_by('-id')
+
+    for karty in wszystkie_karty:
+        print('{} | {} | {} | {} |*|'.format(karty.nr_karty, karty.data_dodania, karty.nr_wiazki, karty.nr_zlecenia))
+
+    #for karty in wszystkie_karty:
+    #    wszystkie_bledy = Bledy.objects.filter(skasowany=False).filter(nr_karty=karty.id)
+    #    for bledy in wszystkie_bledy:
+    #        print('{} | {} | {} | {} |*| {} | {}'.format(karty.nr_karty, karty.data_dodania, karty.nr_wiazki, karty.nr_zlecenia, bledy.nr_grupy_roboczej, bledy.nr_budujacego))
+
+    context = {
+        'wszystkie_karty': wszystkie_karty
+    }
+
+    return render(request, 'bledy/karty_test.html', context)
