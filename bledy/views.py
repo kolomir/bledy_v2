@@ -22,16 +22,8 @@ def get_author(user):
 
 
 def ostatnie_wpisy(request):
-    wszystkie_wpisy = Bledy.objects.filter(skasowany=False).order_by('-id')[:300]
-    karta = Karta.objects.filter(wycofana=False).order_by('-id')[:200]
 
     if request.user.is_authenticated:
-        zglaszajacy_wpisy = get_author(request.user)
-        lista_userow = get_user_model()
-        autor_wpisu = get_object_or_404(lista_userow, username__exact=zglaszajacy_wpisy)
-        lista_autors = Autor.objects.filter(user_id=autor_wpisu.id).values_list('id',flat=True)
-        id_autor = lista_autors[0]
-
         zalogowany_user = request.user
         zalogowany_user_id = request.user.id
 
@@ -40,53 +32,37 @@ def ostatnie_wpisy(request):
         kontrol_grupa = int(dostepy.kontrol)
         jakosc_grupa = int(dostepy.jakosc)
 
-        department_ids = Lider_dzial.objects.filter(user_id=zalogowany_user_id).values_list('dzial_id',flat=True)
+        department_ids = Lider_dzial.objects.filter(user_id=zalogowany_user_id).values_list('dzial_id', flat=True)
         wpisy_lider = Bledy.objects.filter(nr_grupy_roboczej__in=department_ids).filter(zakonczony=0)
-        karta_wpis = Bledy.objects.filter(nr_karty__in=karta).filter(zakonczony=0)
-        #karta_wpis = Karta.objects.filter(wpisy_lider__in=pk).order_by('-id')
+        lista_lider = []
 
-        #print('wpisyLider', wpisy_lider)
-
-        #for wpisyLider in wpisy_lider:
-        #    print('wpisyLider-karta', wpisyLider.nr_karty)
-
-
-        # - info -------------------------------------------------------------------------
-        '''
-        test = 'zalogowany_user: %s; zalogowany_user_id: %d'
-        print('----------------------------------------------------------')
-        print('zalogowany_user: ', zalogowany_user)
-        print('zalogowany_user_id: ', zalogowany_user_id)
-        print('department_ids: ', department_ids)
-        print('wpisy_lider: ', wpisy_lider)
-        print('autor_wpisu: ', autor_wpisu.id)
-        print('zglaszajacy_wpisy: ', zglaszajacy_wpisy)
-        print('lista_autors: ', lista_autors)
-        print('id_autor: ', id_autor)
-        print('----------------------------------------------------------')
-        print(test % (zalogowany_user,zalogowany_user_id))
-        print('----------------------------------------------------------')
-        '''
+        for lista in wpisy_lider:
+            lider_karty = Karta.objects.filter(id=lista.nr_karty_id)
+            for lista_kart in lider_karty:
+                lista_lider.append(
+                    (
+                        lista_kart.nr_karty,
+                        lista_kart.nr_wiazki,
+                        lista_kart.nr_zlecenia,
+                        lista_kart.data_dodania,
+                        lista_kart.zolta,
+                        lista_kart.wydrukowana,
+                        lista.nr_grupy_roboczej,
+                        lista.nr_budujacego,
+                        lista.blad,
+                        lista.opis
+                    )
+                )
+        print(lista_lider)
     else:
-        zalogowany_user = ""
-        zalogowany_user_id = ""
-        department_ids = ""
         wpisy_lider = ""
-        id_autor = ""
-        lider_grupa = ''
-        kontrol_grupa = ''
-        jakosc_grupa = ''
 
     context = {
-        'wszystkie_wpisy': wszystkie_wpisy,
         'wpisy_lider': wpisy_lider,
-        'zalogowany_user_id': zalogowany_user_id,
-        'zalogowany_user': zalogowany_user,
-        'id_autor': id_autor,
-        'karta': karta,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'lista_lider': lista_lider,
     }
 
     return render(request, 'bledy/ostatnie_wpisy.html', context)
@@ -773,16 +749,14 @@ def wpisyPracownik(request):
 @login_required
 def nowy_blad_wpis(request):
     form_blad_wpis = BledyForm(request.POST or None, request.FILES or None)
-    wiazka = Wiazka.objects.filter(aktywny=True).order_by('nazwa_wiazki')
     grupa = GrupaRobocza.objects.filter(aktywna=True).order_by('nr_grupy')
     budujacy = Pracownik.objects.filter(zatrudniony=True).order_by('nr_pracownika')
     rodzajBledu = RodzajeBledu.objects.filter(aktywny=True).order_by('blad')
-    nr_karty = request.session['nr_karty']
+
+    # - DANE Z SESJI -----------------------
+    karta_id = request.session['karta_id']
+    karta_id_table = get_object_or_404(Karta, pk=karta_id)
     kolejny = request.session['kolejny']
-    #nr_wiazki = request.session['nr_wiazki']
-    #nr_wiazki_id = request.session['nr_wiazki_id']
-    #ilosc_skontrolowanych = request.session['ilosc_skontrolowanych']
-    #nr_zlecenia = request.session['nr_zlecenia']
     nr_grupy_roboczej_id = request.session['nr_grupy_roboczej_id']
     nr_grupy_roboczej = request.session['nr_grupy_roboczej']
     nr_budujacego_id = request.session['nr_budujacego_id']
@@ -794,42 +768,38 @@ def nowy_blad_wpis(request):
     blad1 = request.POST.get('nr_budujacego')
     data_dodania1 = request.POST.get('data_dodania')
 
+    # - NIECZYNNE KOLUMNY - dane -------
+    wiazka = 1
+    skontrolowanych = 1
+    zlecenie = 1
+
+    print('-- Pre Product ---------------------')
+    print('karta_id: ', karta_id)
+    print('karta_id_table: ', karta_id_table.id)
+
     moja_Data = datetime.now()
     data_dodania = moja_Data.strftime("%Y-%m-%d")
 
     if request.method == 'POST' and 'zapisz_i_koniec' in request.POST:
-        test_nr_kontrolera = 999
-        test_ilosc_bledow = 999
-        test_blad_id = 1
-        test_nr_budujacego_id = 1
-        test_nr_grupy_roboczej_id = 1
-        test_ilosc_skontrolowanych = 1
-        test_nr_zlecenia = 1
-        test_nr_wiazki_id = 1
-
         if form_blad_wpis.is_valid():
-            print('test_ilosc_bledow',test_ilosc_bledow)
             instancja = form_blad_wpis.save(commit=False)
             autor = get_author(request.user)
             instancja.autor_wpisu = autor
-            instancja.ilosc_skontrolowanych = 1
-            instancja.nr_zlecenia = test_nr_zlecenia
-            instancja.nr_wiazki_id = test_nr_wiazki_id
-            instancja.nr_karty = int(nr_karty)
+            instancja.nr_karty = karta_id_table
             request.session['kolejny'] = 'nie'
-            instancja.save()
 
+            # - NIECZYNNE KOLUMNY --------------------
+            instancja.ilosc_skontrolowanych = skontrolowanych
+            instancja.nr_zlecenia = zlecenie
+            instancja.nr_wiazki_id = wiazka
+
+            instancja.save()
             return redirect(ostatnie_wpisy)
         else:
             form_blad_wpis.errors
 
     if request.method == 'POST' and 'zapisz_i_dodaj' in request.POST:
         # - odczyt i przygotowanie danych ----------------------
-        #nr_wiazki_id = request.POST.get('nr_wiazki')
-        #wyb_wiazki = Wiazka.objects.filter(id=nr_wiazki_id)
-        #nr_wiazki = str(wyb_wiazki[0])
-        #ilosc_skontrolowanych = request.POST.get('ilosc_skontrolowanych')
-        #nr_zlecenia = request.POST.get('nr_zlecenia')
         nr_grupy_roboczej_id = request.POST.get('nr_grupy_roboczej')
         wyb_grupy_roboczej = GrupaRobocza.objects.filter(id=nr_grupy_roboczej_id)
         nr_grupy_roboczej = str(wyb_grupy_roboczej[0])
@@ -840,28 +810,28 @@ def nowy_blad_wpis(request):
         budujacy_imie = str(budujacy[0].imie)
         budujacy_nr = str(budujacy[0])
 
-        # ------------------------------------------------------
         if form_blad_wpis.is_valid():
             instancja = form_blad_wpis.save(commit=False)
             autor = get_author(request.user)
             instancja.autor_wpisu = autor
-            nr_karty = request.POST.get('id_karty')
-            instancja.nr_karty = int(nr_karty)
+            karta_id = request.POST.get('id_karty')
+            instancja.nr_karty = karta_id_table
             request.session['kolejny'] = 'tak'
-            instancja.ilosc_skontrolowanych = 0
-            instancja.nr_zlecenia = '0'
-            instancja.nr_wiazki_id = 1
-            #request.session['nr_wiazki'] = nr_wiazki
-            #request.session['nr_wiazki_id'] = nr_wiazki_id
-            #request.session['nr_zlecenia'] = nr_zlecenia
-            #request.session['ilosc_skontrolowanych'] = ilosc_skontrolowanych
+
+            # - NIECZYNNE KOLUMNY --------------------
+            instancja.ilosc_skontrolowanych = skontrolowanych
+            instancja.nr_zlecenia = zlecenie
+            instancja.nr_wiazki_id = wiazka
+
+            instancja.save()
+
+            # - DANE DO SESJI --------------------
             request.session['nr_grupy_roboczej_id'] = nr_grupy_roboczej_id
             request.session['nr_grupy_roboczej'] = nr_grupy_roboczej
             request.session['nr_budujacego_id'] = nr_budujacego_id
             request.session['budujacy_nazwisko'] = budujacy_nazwisko
             request.session['budujacy_imie'] = budujacy_imie
             request.session['budujacy_nr'] = budujacy_nr
-            instancja.save()
 
             return redirect(nowy_blad_wpis)
         else:
@@ -869,17 +839,12 @@ def nowy_blad_wpis(request):
 
     context = {
         'form_blad_wpis': form_blad_wpis,
-        'wiazka': wiazka,
         'grupa': grupa,
         'budujacy': budujacy,
         'rodzajBledu': rodzajBledu,
-        'id_karty': nr_karty,
+        'id_karty': karta_id,
         'data_dodania': data_dodania,
         'kolejny': kolejny,
-        #'nr_wiazki': nr_wiazki,
-        #'nr_wiazki_id': nr_wiazki_id,
-        #'nr_zlecenia': nr_zlecenia,
-        #'ilosc_skontrolowanych': ilosc_skontrolowanych,
         'nr_grupy_roboczej_id': nr_grupy_roboczej_id,
         'nr_grupy_roboczej': nr_grupy_roboczej,
         'nr_budujacego_id': nr_budujacego_id,
@@ -904,41 +869,53 @@ def wpisyKarta(request):
 def nowaKarta(request):
     form_karta = KartaForm(request.POST or None, request.FILES or None)
     wiazka = Wiazka.objects.filter(aktywny=True).order_by('nazwa_wiazki')
-    karta = Karta.objects.all().order_by('-id')[:30]
+    #karta = Karta.objects.all().order_by('-id')[:30]
     ostatni_wpis = Karta.objects.latest('id')
 
     moja_Data = datetime.now()
     data_dodania = moja_Data.strftime("%Y-%m-%d")
     data_dodania_miesiac = int(moja_Data.strftime("%m"))
     data_dodania_rok = int(moja_Data.strftime("%Y"))
-    nr_karty = int(ostatni_wpis.nr_karty) + 1
+    nr_karty = int(ostatni_wpis.id) + 1
     wycofana = False
+
+    #- NIECZYNNE KOLUMNY - dane -------
+    karta_nrKarty = 1
+
+    print('-- Karta ---------------------')
+    print('ostatni_wpis: ', ostatni_wpis.id)
+    print('nr_karty: ', nr_karty)
 
     if request.method == 'POST':
         if form_karta.is_valid():
             dopisz = form_karta.save(commit=False)
-            zolta = False
             autor = get_author(request.user)
             nr_wiazki_id = request.POST.get('nr_wiazki')
             nr_zlecenia = request.POST.get('nr_zlecenia')
             ilosc_wadliwych = request.POST.get('ilosc_wadliwych')
             zolta_we = request.POST.get('zolta')
+            nr_karty = request.POST.get('nr_karty')
             if zolta_we == 'on':
                 zolta = True
-            dopisz.autor_wpisu = autor
-            dopisz.nr_karty = int(ostatni_wpis.nr_karty) + 1
+            else:
+                zolta = False
+
+            # - NIECZYNNE KOLUMNY --------------------
+            dopisz.nr_karty = int(karta_nrKarty)
+
+            # - WŁAŚCIWE DANE --------------------
             dopisz.data_karty_miesiac = data_dodania_miesiac
             dopisz.data_karty_rok = data_dodania_rok
             dopisz.wycofana = 0
             dopisz.nr_wiazki_id = int(nr_wiazki_id)
             dopisz.nr_zlecenia = nr_zlecenia
             dopisz.ilosc_wadliwych = ilosc_wadliwych
+            dopisz.autor_wpisu = autor
             dopisz.zolta = zolta
             dopisz.save()
-            obecny_wpis_1 = Karta.objects.latest('id')
-            #print('obecny_wpis_1: ', obecny_wpis_1.id, ' | ',type(obecny_wpis_1.id))
-            #print('nr_karty: ', nr_karty, ' | ',type(nr_karty))
-            request.session['nr_karty'] = obecny_wpis_1.id
+
+            # - DANE DO SESJI --------------------
+            request.session['karta_id'] = nr_karty
             request.session['kolejny'] = 'nie'
             request.session['nr_grupy_roboczej_id'] = 0
             request.session['nr_grupy_roboczej'] = 'nic'
@@ -947,10 +924,6 @@ def nowaKarta(request):
             request.session['budujacy_imie'] = 'nic'
             request.session['budujacy_nr'] = 'nic'
             request.session['zolta'] = False
-            #request.session['nr_wiazki'] = 'nic'
-            #request.session['nr_wiazki_id'] = 0
-            #request.session['nr_zlecenia'] = 'nic'
-            #request.session['ilosc_skontrolowanych'] = 0
             return redirect(nowy_blad_wpis)
         else:
             print('Nie jest VALID!')
@@ -960,7 +933,6 @@ def nowaKarta(request):
 
     context = {
         'form_karta': form_karta,
-        'karta': karta,
         'data_dodania': data_dodania,
         'data_dodania_miesiac': str(data_dodania_miesiac),
         'data_dodania_rok': str(data_dodania_rok),

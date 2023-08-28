@@ -101,11 +101,11 @@ class Karta(models.Model):
     zolta = models.BooleanField(default=False)
     wydrukowana = models.BooleanField(default=False)
 
-    def numerKarty(self):
-        return self.pk
+    def __int__(self):
+        return self.id
 
-    def __str__(self):
-        return "{}/{}/{}".format(self.id.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
+    #def __str__(self):
+    #    return "{}/{}/{}".format(self.id.__str__(), self.data_karty_miesiac.__str__(), self.data_karty_rok.__str__())
 
 
 class Bledy(models.Model):
@@ -132,8 +132,8 @@ class Bledy(models.Model):
     data_dodania = models.DateTimeField('data dodania', blank=True, null=True)
     skasowany = models.BooleanField(default=False)
     zakonczony = models.BooleanField(default=False)
-    #nr_karty = models.ForeignKey(Karta,on_delete=models.CASCADE, default=1) #
-    nr_karty = models.DecimalField(max_digits=8, decimal_places=0, default=1) # >>>>>>>>>> Wymagane
+    nr_karty = models.ForeignKey(Karta, on_delete=models.CASCADE, default=1, related_name="nrKarty") #
+    #nr_karty = models.DecimalField(max_digits=8, decimal_places=0, default=1) # >>>>>>>>>> Wymagane
 
     def __str__(self):
         return str(self.nr_wiazki)
