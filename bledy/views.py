@@ -22,8 +22,16 @@ def get_author(user):
 
 
 def ostatnie_wpisy(request):
+    wszystkie_wpisy = Bledy.objects.filter(skasowany=False).order_by('-id')[:300]
+    karta = Karta.objects.filter(wycofana=False).order_by('-id')[:200]
 
     if request.user.is_authenticated:
+        zglaszajacy_wpisy = get_author(request.user)
+        lista_userow = get_user_model()
+        autor_wpisu = get_object_or_404(lista_userow, username__exact=zglaszajacy_wpisy)
+        lista_autors = Autor.objects.filter(user_id=autor_wpisu.id).values_list('id',flat=True)
+        id_autor = lista_autors[0]
+
         zalogowany_user = request.user
         zalogowany_user_id = request.user.id
 
@@ -33,36 +41,28 @@ def ostatnie_wpisy(request):
         jakosc_grupa = int(dostepy.jakosc)
 
         department_ids = Lider_dzial.objects.filter(user_id=zalogowany_user_id).values_list('dzial_id', flat=True)
-        wpisy_lider = Bledy.objects.filter(nr_grupy_roboczej__in=department_ids).filter(zakonczony=0)
-        lista_lider = []
-
-        for lista in wpisy_lider:
-            lider_karty = Karta.objects.filter(id=lista.nr_karty_id)
-            for lista_kart in lider_karty:
-                lista_lider.append(
-                    (
-                        lista_kart.nr_karty,
-                        lista_kart.nr_wiazki,
-                        lista_kart.nr_zlecenia,
-                        lista_kart.data_dodania,
-                        lista_kart.zolta,
-                        lista_kart.wydrukowana,
-                        lista.nr_grupy_roboczej,
-                        lista.nr_budujacego,
-                        lista.blad,
-                        lista.opis
-                    )
-                )
-        print(lista_lider)
+        wpisy_lider = Bledy.objects.filter(nr_grupy_roboczej__in=department_ids).filter(zakonczony=0).filter(skasowany=0).select_related('nr_karty')
+        karta_wpis = Bledy.objects.filter(nr_karty__in=karta).filter(zakonczony=0)
     else:
+        zalogowany_user = ""
+        zalogowany_user_id = ""
+        department_ids = ""
         wpisy_lider = ""
+        id_autor = ""
+        lider_grupa = ''
+        kontrol_grupa = ''
+        jakosc_grupa = ''
 
     context = {
+        'wszystkie_wpisy': wszystkie_wpisy,
         'wpisy_lider': wpisy_lider,
+        'zalogowany_user_id': zalogowany_user_id,
+        'zalogowany_user': zalogowany_user,
+        'id_autor': id_autor,
+        'karta': karta,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
-        'lista_lider': lista_lider,
     }
 
     return render(request, 'bledy/ostatnie_wpisy.html', context)
