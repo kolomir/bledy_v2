@@ -957,12 +957,20 @@ def detal_karta(request, id):
         zalogowany_user = request.user
         zalogowany_user_id = request.user.id
 
+        dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+        lider_grupa = int(dostepy.lider)
+        kontrol_grupa = int(dostepy.kontrol)
+        jakosc_grupa = int(dostepy.jakosc)
+
     context = {
         'wpis': wpis,
         'wszystkie_wpisy': wszystkie_wpisy,
         'zalogowany_user_id': zalogowany_user_id,
         'zalogowany_user': zalogowany_user,
         'id_autor': id_autor,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
     }
 
     return render(request, 'bledy/karta.html', context)
@@ -1095,7 +1103,7 @@ def filtrowanie_bledy_n(request):
     if eksport == 'on':
         for obj in qs:
             if obj.data_dodania >= date_start:
-                qs_karty = Karta.objects.filter(id=obj.nr_karty)
+                qs_karty = Karta.objects.filter(id=obj.nr_karty_id)
                 for karta2 in qs_karty:
                     budujacy = "{} {}".format(obj.nr_budujacego.nazwisko, obj.nr_budujacego.imie)
                     if karta2.zolta == True:
