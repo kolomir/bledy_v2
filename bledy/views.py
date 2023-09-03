@@ -642,6 +642,7 @@ def przywroc_wiazke(request, id):
 
 def wpisyWiazka(request):
     wiazka = Wiazka.objects.all().order_by('nazwa_wiazki')
+    wiazka_bezKlienta = Wiazka.objects.filter(nazwa_klienta=68).order_by('nazwa_wiazki')
 
     zalogowany_user = request.user
     dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
@@ -654,6 +655,7 @@ def wpisyWiazka(request):
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wiazka_bezKlienta': wiazka_bezKlienta,
     }
     return render(request,'bledy/wiazka.html',context)
 

@@ -20,7 +20,7 @@
                     <th class="th-sm" width="15%">Dzial</th>
                     <th class="th-sm" width="8%">Zatrudniony</th>
                     {% if user.is_authenticated %}
-                    <th class="th-sm" width="22%">#</th>
+                    <th class="th-sm" width="5%">#</th>
                     {% endif %}
                 </tr>
             </thead>
@@ -36,11 +36,11 @@
                     {% if user.is_authenticated %}
                     <td>
                         {% if jakosc_grupa == 1 %}
-                        <a href="{% url 'pracownikFormedytuj' wpis.id %}" class="btn btn-outline-primary btn-rounded waves-effect btn-sm mr-2">Edytuj</a>
+                        <a href="{% url 'pracownikFormedytuj' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
                             {% if wpis.zatrudniony == 1 %}
-                        <a href="{% url 'usun_pracownik' wpis.id %}" class="btn btn-outline-danger btn-rounded waves-effect btn-sm">Usuń</a>
+                        <a href="{% url 'usun_pracownik' wpis.id %}" title="Usuń wpis" ><i class="fas fa-trash-alt red-text ml-2 fa-2x"></i></a>
                             {% else %}
-                        <a href="{% url 'przywroc_pracownik' wpis.id %}" class="btn btn-outline-success btn-rounded waves-effect btn-sm">Przywróć</a>
+                        <a href="{% url 'przywroc_pracownik' wpis.id %}" title="Przywróć wpis" ><i class="fas fa-trash-restore-alt amber-text ml-2 fa-2x"></i></a>
                             {% endif %}
                         {% endif %}
                     </td>

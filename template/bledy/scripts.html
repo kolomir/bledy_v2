@@ -36,6 +36,12 @@
             $('.dataTables_length').addClass('bs-select');
         });
         $(document).ready(function () {
+            $('#dtWiazki2').DataTable({
+                "order": [[ 1, "asc" ]]
+            });
+            $('.dataTables_length').addClass('bs-select');
+        });
+        $(document).ready(function () {
             $('#dtPracownik').DataTable({
                 "order": [[ 1, "asc" ]]
             });
