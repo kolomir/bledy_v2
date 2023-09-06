@@ -872,31 +872,38 @@ def nowaKarta(request):
     form_karta = KartaForm(request.POST or None, request.FILES or None)
     wiazka = Wiazka.objects.filter(aktywny=True).order_by('nazwa_wiazki')
     #karta = Karta.objects.all().order_by('-id')[:30]
-    ostatni_wpis = Karta.objects.latest('id')
+    #ostatni_wpis = Karta.objects.latest('id') # wywalone
 
     moja_Data = datetime.now()
     data_dodania = moja_Data.strftime("%Y-%m-%d")
     data_dodania_miesiac = int(moja_Data.strftime("%m"))
     data_dodania_rok = int(moja_Data.strftime("%Y"))
-    nr_karty = int(ostatni_wpis.id) + 1
+    #nr_karty = int(ostatni_wpis.id) + 1 # wywalone
+    nr_karty = 1 # wywalone
     wycofana = False
 
     #- NIECZYNNE KOLUMNY - dane -------
     karta_nrKarty = 1
 
-    print('-- Karta ---------------------')
-    print('ostatni_wpis: ', ostatni_wpis.id)
-    print('nr_karty: ', nr_karty)
+    #print('-- Karta ---------------------')
+    #print('ostatni_wpis: ', ostatni_wpis.id) # wywalone
+    #print('nr_karty: ', nr_karty) # wywalone
 
     if request.method == 'POST':
         if form_karta.is_valid():
+            print('-- Karta1 ---------------------')
+            print('nr_karty: ', nr_karty)  # wywalone
             dopisz = form_karta.save(commit=False)
+            ostatni_wpis = Karta.objects.latest('id') # wywalone
+            nr_karty = int(ostatni_wpis.id) + 1 # wywalone
             autor = get_author(request.user)
             nr_wiazki_id = request.POST.get('nr_wiazki')
             nr_zlecenia = request.POST.get('nr_zlecenia')
             ilosc_wadliwych = request.POST.get('ilosc_wadliwych')
             zolta_we = request.POST.get('zolta')
-            nr_karty = request.POST.get('nr_karty')
+            #nr_karty = request.POST.get('nr_karty') # wywalone
+            print('-- Karta2 ---------------------')
+            print('nr_karty: ', nr_karty)  # wywalone
             if zolta_we == 'on':
                 zolta = True
             else:
@@ -938,7 +945,7 @@ def nowaKarta(request):
         'data_dodania': data_dodania,
         'data_dodania_miesiac': str(data_dodania_miesiac),
         'data_dodania_rok': str(data_dodania_rok),
-        'nr_karty': int(nr_karty),
+        #'nr_karty': int(nr_karty), # wywalone
         'wycofana': wycofana,
         'wiazka': wiazka,
     }
