@@ -82,7 +82,7 @@
                         <td>{{ wpis.nazwa_klienta }}</td>
                         {% if user.is_authenticated %}
                         <td>
-                            {% if jakosc_grupa == 1 %}
+                            {% if jakosc_grupa == 1 or wzorce_grupa == 1 %}
                             <a href="{% url 'wiazkaFormedytuj' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
                                 {% if wpis.aktywny == 1 %}
                             <a href="{% url 'usun_wiazke' wpis.id %}" title="Usuń wpis" ><i class="fas fa-trash-alt red-text ml-2 fa-2x"></i></a>

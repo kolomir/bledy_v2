@@ -39,6 +39,7 @@ def ostatnie_wpisy(request):
         lider_grupa = int(dostepy.lider)
         kontrol_grupa = int(dostepy.kontrol)
         jakosc_grupa = int(dostepy.jakosc)
+        wzorce_grupa = int(dostepy.wzorce)
 
         department_ids = Lider_dzial.objects.filter(user_id=zalogowany_user_id).values_list('dzial_id', flat=True)
         wpisy_lider = Bledy.objects.filter(nr_grupy_roboczej__in=department_ids).filter(zakonczony=0).filter(skasowany=0).select_related('nr_karty')
@@ -52,6 +53,7 @@ def ostatnie_wpisy(request):
         lider_grupa = ''
         kontrol_grupa = ''
         jakosc_grupa = ''
+        wzorce_grupa = ''
 
     context = {
         'wszystkie_wpisy': wszystkie_wpisy,
@@ -63,6 +65,7 @@ def ostatnie_wpisy(request):
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/ostatnie_wpisy.html', context)
@@ -85,6 +88,15 @@ def wszystkie_wpisy(request):
         lider_grupa = int(dostepy.lider)
         kontrol_grupa = int(dostepy.kontrol)
         jakosc_grupa = int(dostepy.jakosc)
+        wzorce_grupa = int(dostepy.wzorce)
+    else:
+        zalogowany_user = ""
+        zalogowany_user_id = ""
+        id_autor = ""
+        lider_grupa = ''
+        kontrol_grupa = ''
+        jakosc_grupa = ''
+        wzorce_grupa = ''
 
     context = {
         'wszystkie_wpisy': wszystkie_wpisy,
@@ -94,6 +106,7 @@ def wszystkie_wpisy(request):
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/wszystkie_wpisy.html', context)
@@ -128,12 +141,14 @@ def wpisy_lider_dzial(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'lider_dzial': lider_dzial,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request,'bledy/lider_dzial.html',context)
 
@@ -142,12 +157,23 @@ def wpisy_lider_dzial(request):
 def nowy_klient(request):
     form_klienci = KlientForm(request.POST or None, request.FILES or None)
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_klienci.is_valid():
         form_klienci.save()
         return redirect(wpisyKlient)
 
     context = {
-        'form_klienci': form_klienci
+        'form_klienci': form_klienci,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_klient.html', context)
@@ -159,13 +185,24 @@ def edytuj_klient(request, id):
 
     form_klienci = KlientForm(request.POST or None, request.FILES or None, instance=wpis)
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_klienci.is_valid():
         form_klienci.save()
         return redirect(wpisyKlient)
 
     context = {
         'form_klienci': form_klienci,
-        'wpis': wpis
+        'wpis': wpis,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_klient_ed.html', context)
@@ -213,12 +250,14 @@ def wpisyKlient(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'klienci': klienci,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request,'bledy/klienci.html',context)
 
@@ -298,12 +337,14 @@ def wpisyGrupaBledow(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'grupy_bledow': grupy_bledow,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request, 'bledy/grupybledow.html', context)
 
@@ -312,12 +353,23 @@ def wpisyGrupaBledow(request):
 def nowa_grupa(request):
     form_grupy = GrupaRoboczaForm(request.POST or None, request.FILES or None)
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_grupy.is_valid():
         form_grupy.save()
         return redirect(wpisyGrupaRobocza)
 
     context = {
-        'form_grupy': form_grupy
+        'form_grupy': form_grupy,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_grupa.html', context)
@@ -329,13 +381,24 @@ def edytuj_grupa(request, id):
 
     form_grupy = GrupaRoboczaForm(request.POST or None, request.FILES or None, instance=wpis)
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_grupy.is_valid():
         form_grupy.save()
         return redirect(wpisyGrupaRobocza)
 
     context = {
         'form_grupy': form_grupy,
-        'wpis': wpis
+        'wpis': wpis,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_grupa_ed.html', context)
@@ -383,12 +446,14 @@ def wpisyGrupaRobocza(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'grupy_robocze': grupy_robocze,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request, 'bledy/grupyrobocze.html', context)
 
@@ -468,12 +533,14 @@ def wpisyDzialy(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'dzialy': dzialy,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request,'bledy/dzialy.html',context)
 
@@ -483,6 +550,13 @@ def nowy_blad(request):
     form_blad = BladForm(request.POST or None, request.FILES or None)
     grupa_bledow = GrupaBledow.objects.filter(aktywna=True).order_by('nazwa')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_blad.is_valid():
         bl = request.GET.get('blad')
         gr = request.GET.get('grupa_bledow')
@@ -491,7 +565,11 @@ def nowy_blad(request):
 
     context = {
         'form_blad': form_blad,
-        'grupa_bledow': grupa_bledow
+        'grupa_bledow': grupa_bledow,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_bledy.html', context)
@@ -504,6 +582,13 @@ def edytuj_blad(request, id):
 
     form_blad = BladForm(request.POST or None, request.FILES or None, instance=wpis)
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_blad.is_valid():
         form_blad.save()
         return redirect(wpisyBlad)
@@ -511,7 +596,11 @@ def edytuj_blad(request, id):
     context = {
         'form_blad': form_blad,
         'grupa_bledow': grupa_bledow,
-        'wpis': wpis
+        'wpis': wpis,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_bledy_ed.html', context)
@@ -559,12 +648,13 @@ def wpisyBlad(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'bledy': bledy,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
-        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request, 'bledy/bledy.html', context)
 
@@ -574,13 +664,24 @@ def nowa_wiazka(request):
     form_wiazka = WiazkaForm(request.POST or None, request.FILES or None)
     klient = Klient.objects.filter(aktywny=True).order_by('nazwa_klienta')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_wiazka.is_valid():
         form_wiazka.save()
         return redirect(wpisyWiazka)
 
     context = {
         'form_wiazka': form_wiazka,
-        'klient': klient
+        'klient': klient,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_wiazka.html', context)
@@ -593,6 +694,13 @@ def edytuj_wiazka(request, id):
 
     form_wiazka = WiazkaForm(request.POST or None, request.FILES or None, instance=wpis)
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_wiazka.is_valid():
         form_wiazka.save()
         return redirect(wpisyWiazka)
@@ -600,7 +708,11 @@ def edytuj_wiazka(request, id):
     context = {
         'form_wiazka': form_wiazka,
         'wpis': wpis,
-        'klient': klient
+        'klient': klient,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_wiazka_ed.html', context)
@@ -649,12 +761,14 @@ def wpisyWiazka(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'wiazka': wiazka,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
         'wiazka_bezKlienta': wiazka_bezKlienta,
     }
     return render(request,'bledy/wiazka.html',context)
@@ -665,13 +779,24 @@ def nowy_pracownik(request):
     form_pracownik = PracownikForm(request.POST or None, request.FILES or None)
     dzial = Dzial.objects.filter(aktywny=True).order_by('dzial')
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_pracownik.is_valid():
         form_pracownik.save()
         return redirect(wpisyPracownik)
 
     context = {
         'form_pracownik': form_pracownik,
-        'dzial': dzial
+        'dzial': dzial,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_pracownik.html', context)
@@ -683,6 +808,13 @@ def edytuj_pracownik(request, id):
     dzial = Dzial.objects.filter(aktywny=True).order_by('dzial')
     form_pracownik = PracownikForm(request.POST or None, request.FILES or None, instance=wpis)
 
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
     if form_pracownik.is_valid():
         form_pracownik.save()
         return redirect(wpisyPracownik)
@@ -690,7 +822,11 @@ def edytuj_pracownik(request, id):
     context = {
         'form_pracownik': form_pracownik,
         'wpis': wpis,
-        'dzial': dzial
+        'dzial': dzial,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_pracownik_ed.html', context)
@@ -738,12 +874,14 @@ def wpisyPracownik(request):
     lider_grupa = int(dostepy.lider)
     kontrol_grupa = int(dostepy.kontrol)
     jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'pracownik': pracownik,
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request,'bledy/pracownik.html',context)
 
@@ -754,6 +892,13 @@ def nowy_blad_wpis(request):
     grupa = GrupaRobocza.objects.filter(aktywna=True).order_by('nr_grupy')
     budujacy = Pracownik.objects.filter(zatrudniony=True).order_by('nr_pracownika')
     rodzajBledu = RodzajeBledu.objects.filter(aktywny=True).order_by('blad')
+
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     # - DANE Z SESJI -----------------------
     karta_id = request.session['karta_id']
@@ -853,6 +998,10 @@ def nowy_blad_wpis(request):
         'budujacy_nazwisko': budujacy_nazwisko,
         'budujacy_imie': budujacy_imie,
         'budujacy_nr': budujacy_nr,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/form_bledy_wpisy.html', context)
@@ -861,8 +1010,28 @@ def nowy_blad_wpis(request):
 def wpisyKarta(request):
     karta = Karta.objects.all().order_by('-id')
 
+    if request.user.is_authenticated:
+        zalogowany_user = request.user
+        dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+        lider_grupa = int(dostepy.lider)
+        kontrol_grupa = int(dostepy.kontrol)
+        jakosc_grupa = int(dostepy.jakosc)
+        wzorce_grupa = int(dostepy.wzorce)
+    else:
+        zalogowany_user = ""
+        zalogowany_user_id = ""
+        id_autor = ""
+        lider_grupa = ''
+        kontrol_grupa = ''
+        jakosc_grupa = ''
+        wzorce_grupa = ''
+
     context = {
-        'karta': karta
+        'karta': karta,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request,'bledy/wszystkie_karty.html',context)
 
@@ -873,6 +1042,13 @@ def nowaKarta(request):
     wiazka = Wiazka.objects.filter(aktywny=True).order_by('nazwa_wiazki')
     #karta = Karta.objects.all().order_by('-id')[:30]
     #ostatni_wpis = Karta.objects.latest('id') # wywalone
+
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     moja_Data = datetime.now()
     data_dodania = moja_Data.strftime("%Y-%m-%d")
@@ -948,6 +1124,10 @@ def nowaKarta(request):
         #'nr_karty': int(nr_karty), # wywalone
         'wycofana': wycofana,
         'wiazka': wiazka,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     return render(request, 'bledy/form_karta.html', context)
 
@@ -970,6 +1150,7 @@ def detal_karta(request, id):
         lider_grupa = int(dostepy.lider)
         kontrol_grupa = int(dostepy.kontrol)
         jakosc_grupa = int(dostepy.jakosc)
+        wzorce_grupa = int(dostepy.wzorce)
 
     context = {
         'wpis': wpis,
@@ -980,6 +1161,7 @@ def detal_karta(request, id):
         'lider_grupa': lider_grupa,
         'kontroler_grupa': kontrol_grupa,
         'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
 
     return render(request, 'bledy/karta.html', context)
@@ -989,6 +1171,13 @@ def detal_karta(request, id):
 def edytuj_blad_wpis(request, id):
     wpis = get_object_or_404(Bledy, pk=id)
     karta_wpis = Karta.objects.filter(pk=wpis.nr_karty)
+
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
 
     wpisy = BledyForm(request.POST or None, request.FILES or None, instance=wpis)
     wiazka = Wiazka.objects.filter(aktywny=True).order_by('nazwa_wiazki')
@@ -1020,7 +1209,11 @@ def edytuj_blad_wpis(request, id):
         'grupa': grupa,
         'budujacy': budujacy,
         'rodzajBledu': rodzajBledu,
-        'data_dodania': data_dodania
+        'data_dodania': data_dodania,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
     }
     #print('rodzajReklamacji:', wpisy.instance.rodzaj_reklamacji)
 

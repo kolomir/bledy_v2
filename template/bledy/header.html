@@ -38,18 +38,18 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLinkNowy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dodaj</a>
                         <div class="dropdown-menu  dropdown-danger" aria-labelledby="navbarDropdownMenuLink">
-                            {% if jakosc_grupa == 1 %}
+                            {% if jakosc_grupa == 1 or wzorce_grupa == 1 %}
+                            <a class="dropdown-item" href="/wiazkaForm">Nowa Wiązka</a>
                             <a class="dropdown-item" href="/klienciForm">Nowy Klient</a>
+                            {% endif %}
+                            {% if jakosc_grupa == 1 %}
                             <a class="dropdown-item" href="/grupyForm">Nowa Grupa</a>
                             <a class="dropdown-item" href="/przypisz_lider_dzial">Przypisz grupę</a>
                             <a class="dropdown-item" href="/dzialyForm">Nowy Dział</a>
                             <a class="dropdown-item" href="/bledyForm">Nowy Błąd</a>
-                            <a class="dropdown-item" href="/wiazkaForm">Nowa Wiązka</a>
-                            {% endif %}
-                            <a class="dropdown-item" href="/pracownikForm">Nowy Pracownik</a>
-                            {% if jakosc_grupa == 1 %}
                             <a class="dropdown-item" href="/grupy_bledowForm">Nowa Grupa Błędów</a>
                             {% endif %}
+                            <a class="dropdown-item" href="/pracownikForm">Nowy Pracownik</a>
                         </div>
                     </li>
                     {% endif %}

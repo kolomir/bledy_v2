@@ -75,6 +75,7 @@ class Autor(models.Model):
     lider = models.BooleanField(default=False)
     kontrol = models.BooleanField(default=False)
     jakosc = models.BooleanField(default=False)
+    wzorce = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
