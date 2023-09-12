@@ -12,6 +12,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator, EmptyPage
 
 
 def get_author(user):
@@ -1724,3 +1725,56 @@ def detal_karta_test(request):
     }
 
     return render(request, 'bledy/karty_test.html', context)
+
+def test_wszystkie_wpisy(request):
+    wszystkie_wpisy = Bledy.objects.order_by('-id')
+
+    p = Paginator(wszystkie_wpisy, 10)
+    page_num =request.GET.get('page', 1)
+    pages = []
+    for i in range(0,p.num_pages):
+        pages.append(i+1)
+
+    try:
+        page = p.page(page_num)
+    except EmptyPage:
+        page = p.page(1)
+
+    if request.user.is_authenticated:
+        zglaszajacy_wpisy = get_author(request.user)
+        lista_userow = get_user_model()
+        autor_wpisu = get_object_or_404(lista_userow, username__exact=zglaszajacy_wpisy)
+        lista_autors = Autor.objects.filter(user_id=autor_wpisu.id).values_list('id', flat=True)
+        id_autor = lista_autors[0]
+
+        zalogowany_user = request.user
+        zalogowany_user_id = request.user.id
+
+        dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+        lider_grupa = int(dostepy.lider)
+        kontrol_grupa = int(dostepy.kontrol)
+        jakosc_grupa = int(dostepy.jakosc)
+        wzorce_grupa = int(dostepy.wzorce)
+    else:
+        zalogowany_user = ""
+        zalogowany_user_id = ""
+        id_autor = ""
+        lider_grupa = ''
+        kontrol_grupa = ''
+        jakosc_grupa = ''
+        wzorce_grupa = ''
+
+    context = {
+        #'wszystkie_wpisy': wszystkie_wpisy,
+        'wszystkie_wpisy': page,
+        'zalogowany_user_id': zalogowany_user_id,
+        'zalogowany_user': zalogowany_user,
+        'id_autor': id_autor,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
+        'pages': pages,
+    }
+
+    return render(request, 'bledy/test_wszystkie_wpisy.html', context)

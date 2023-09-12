@@ -8,7 +8,7 @@ from .views import ostatnie_wpisy, nowy_klient, edytuj_klient, wpisyKlient, usun
                 nowy_blad_wpis, edytuj_blad_wpis, usun_blad_wpis, przywroc_blad_wpis, filtrowanie, filtrowanie_karty_n, filtrowanie_bledy_n, \
                 login_request, logout_request, upload_file_view, nowa_grupa_bledow, edytuj_grupa_bledow, \
                 usun_grupa_bledow, przywroc_grupa_bledow, wpisyGrupaBledow, wpisy_lider_dzial, przypisz_lider_dzial, \
-                zakoncz_blad_wpis, nowaKarta, wpisyKarta, wszystkie_wpisy, detal_karta, detal_karta_test
+                zakoncz_blad_wpis, nowaKarta, wpisyKarta, wszystkie_wpisy, test_wszystkie_wpisy, detal_karta, detal_karta_test
 
 
 urlpatterns = [
@@ -48,6 +48,7 @@ urlpatterns = [
     path('lider_dzial/', wpisy_lider_dzial, name='lider_dzial'),
     path('wszystkie_karty/', wpisyKarta, name='wpisyKarta'),
     path('wszystkie_wpisy/', wszystkie_wpisy, name='wszystkie_wpisy'),
+    path('test_wszystkie_wpisy/', test_wszystkie_wpisy, name='test_wszystkie_wpisy'),
     path('detal_karta/<int:id>/', detal_karta, name='detal_karta'),
     path('detal_karta/<int:id>/', detal_karta, name='detal_karta'),
 
