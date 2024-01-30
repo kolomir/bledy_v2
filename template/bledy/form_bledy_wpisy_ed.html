@@ -13,14 +13,22 @@
                     {% csrf_token %}
                     <div class="form-row mb-3">
                         <div class="col">
-                            <select name="nr_grupy_roboczej" class="mdb-select md-form" id="id_nr_grupy_roboczej" required  searchable="Search here..">
-                                <option value="{{wpis.nr_grupy_roboczej_id}}" selected>{{wpis.nr_grupy_roboczej}}</option>
-                                {% for result in grupa %}
-                                <option value="{{ result.id }}">{{ result.nr_grupy }}</option>
-                                {% endfor %}
-                            </select>
-                            <label class="mdb-main-label">Grupa robocza</label>
+                            {% if jakosc_grupa == 1 %}
+                                <select name="nr_grupy_roboczej" class="mdb-select md-form" id="id_nr_grupy_roboczej" required  searchable="Search here..">
+                            {% else %}
+                                <input type="hidden" id="id_nr_grupy_roboczej" name="nr_grupy_roboczej" value={{wpis.nr_grupy_roboczej_id}}>
+                                <select name="nr_grupy_roboczej" class="mdb-select md-form" id="id_nr_grupy_roboczej" required  searchable="Search here.." disabled>
+
+
+                            {% endif %}
+                                    <option value="{{wpis.nr_grupy_roboczej_id}}" selected>{{wpis.nr_grupy_roboczej}}</option>
+                                    {% for result in grupa %}
+                                    <option value="{{ result.id }}">{{ result.nr_grupy }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label class="mdb-main-label">Grupa robocza</label>
                         </div>
+
                         <div class="col">
                             <select name="nr_budujacego" class="mdb-select md-form" id="id_nr_budujacego" required  searchable="Search here..">
                                 <option value="{{wpis.nr_budujacego_id}}" selected>[{{ wpis.nr_budujacego.nr_pracownika }}] {{ wpis.nr_budujacego.nazwisko }} {{ wpis.nr_budujacego.imie }}</option>
