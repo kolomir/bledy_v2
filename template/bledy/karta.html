@@ -21,6 +21,7 @@
                                 <th>Żółta</th>
                                 <th>Druk</th>
                                 <th>Autor</th>
+                                <th>Edycja</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,6 +44,11 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ wpis.autor_wpisu }}</td>
+                                <td>
+                                    {% if id_autor == wpis.autor_wpisu_id or jakosc_grupa == 1 %}
+                                        <a href="{% url 'edycja_Karta' wpis.id %}" title="Edytuj wpis" ><i class="fas fa-pen-square indigo-text ml-2 fa-2x"></i></a>
+                                    {% endif %}
+                                </td>
                             </tr>
                         </tbody>
                     </table>

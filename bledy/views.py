@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Bledy, Klient, GrupaRobocza, Dzial, RodzajeBledu, Wiazka, Pracownik, Autor, RodzajReklamacji, Csv, GrupaBledow, Lider_dzial, Karta
 from .forms import KlientForm, SkasowacKlienci, GrupaRoboczaForm, SkasowacGrupaRobocza, DzialForm, SkasowacDzial, \
                 BladForm, SkasowacBlad, WiazkaForm, SkasowacWiazka, PracownikForm, SkasowacPracownik, BledyForm, \
-                SkasowacBledy, CsvModelForm, GrupaBledowForm, SkasowacGrupaBledow, LiderDzial, KartaForm
+                SkasowacBledy, CsvModelForm, GrupaBledowForm, SkasowacGrupaBledow, LiderDzial, KartaForm, KartaForm_zlota
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import csv
@@ -1132,6 +1132,46 @@ def nowaKarta(request):
     }
     return render(request, 'bledy/form_karta.html', context)
 
+
+@login_required
+def edycja_Karta(request, id):
+    wpis = Karta.objects.filter(pk=id)
+
+    zalogowany_user = request.user
+    dostepy = get_object_or_404(Autor, user_id__exact=zalogowany_user.id)
+    lider_grupa = int(dostepy.lider)
+    kontrol_grupa = int(dostepy.kontrol)
+    jakosc_grupa = int(dostepy.jakosc)
+    wzorce_grupa = int(dostepy.wzorce)
+
+    for kartaWpis in wpis:
+        karta_id = kartaWpis.id
+        karta_nr_wiazki = kartaWpis.nr_wiazki
+        karta_nr_zlecenia = kartaWpis.nr_zlecenia
+        karta_ilosc_wadliwych = kartaWpis.ilosc_wadliwych
+        karta_zolta = kartaWpis.zolta
+
+    wpisy = KartaForm_zlota(request.POST or None, request.FILES or None, instance=wpis[0])
+
+    if wpisy.is_valid():
+        wpisy.save()
+        return redirect(ostatnie_wpisy)
+    else:
+        print('Nie jest VALID!')
+        print('Error: ', wpisy.errors)
+
+    context = {
+        'id': karta_id,
+        'nr_wiazki': karta_nr_wiazki,
+        'nr_zlecenia': karta_nr_zlecenia,
+        'ilosc_wadliwych': karta_ilosc_wadliwych,
+        'zolta': karta_zolta,
+        'lider_grupa': lider_grupa,
+        'kontroler_grupa': kontrol_grupa,
+        'jakosc_grupa': jakosc_grupa,
+        'wzorce_grupa': wzorce_grupa,
+    }
+    return render(request, 'bledy/form_karta_ed.html', context)
 
 @login_required
 def detal_karta(request, id):

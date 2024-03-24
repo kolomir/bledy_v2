@@ -18,6 +18,13 @@ class KartaForm(ModelForm):
             'ilosc_wadliwych'
         ]
 
+class KartaForm_zlota(ModelForm):
+    class Meta:
+        model = Karta
+        fields = [
+            'zolta'
+        ]
+
 
 #= LIDER - DZIAL =======================================================
 class LiderDzial(ModelForm):

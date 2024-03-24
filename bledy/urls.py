@@ -8,7 +8,7 @@ from .views import ostatnie_wpisy, nowy_klient, edytuj_klient, wpisyKlient, usun
                 nowy_blad_wpis, edytuj_blad_wpis, usun_blad_wpis, przywroc_blad_wpis, filtrowanie, filtrowanie_karty_n, filtrowanie_bledy_n, \
                 login_request, logout_request, upload_file_view, nowa_grupa_bledow, edytuj_grupa_bledow, \
                 usun_grupa_bledow, przywroc_grupa_bledow, wpisyGrupaBledow, wpisy_lider_dzial, przypisz_lider_dzial, \
-                zakoncz_blad_wpis, nowaKarta, wpisyKarta, wszystkie_wpisy, test_wszystkie_wpisy, detal_karta, detal_karta_test
+                zakoncz_blad_wpis, nowaKarta, edycja_Karta, wpisyKarta, wszystkie_wpisy, test_wszystkie_wpisy, detal_karta, detal_karta_test
 
 
 urlpatterns = [
@@ -35,6 +35,7 @@ urlpatterns = [
     path('wiazkaFormedytuj/<int:id>/', edytuj_wiazka, name='wiazkaFormedytuj'),
     path('pracownikFormedytuj/<int:id>/', edytuj_pracownik, name='pracownikFormedytuj'),
     path('bledy_edytujForm/<int:id>/', edytuj_blad_wpis, name='bledy_edytujForm'),
+    path('form_karta_ed/<int:id>/', edycja_Karta, name='edycja_Karta'),
 
     #= Zestawienie ========================================
     path('klienci/', wpisyKlient, name='klienci'),
